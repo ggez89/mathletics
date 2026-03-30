@@ -15,11 +15,16 @@ export function generate(rng: () => number, params: any = {}): Problem {
   const minDenominator = params.minDenominator ?? 2;
   const maxDenominator = params.maxDenominator ?? 10;
   const operation = params.operation ?? "+";
+  const useLikeDenominators = params.useLikeDenominators ?? false;
 
-  const n1 = randInt(rng, minNumerator, maxNumerator);
-  const d1 = randInt(rng, minDenominator, maxDenominator);
-  const n2 = randInt(rng, minNumerator, maxNumerator);
-  const d2 = randInt(rng, minDenominator, maxDenominator);
+  let n1 = randInt(rng, minNumerator, maxNumerator);
+  let d1 = randInt(rng, minDenominator, maxDenominator);
+  let n2 = randInt(rng, minNumerator, maxNumerator);
+  let d2 = randInt(rng, minDenominator, maxDenominator);
+
+  if (useLikeDenominators) {
+    d2 = d1;
+  }
 
   let ansN: number, ansD: number;
 
@@ -89,6 +94,7 @@ export const defaultParams = {
   minDenominator: 1,
   maxDenominator: 5,
   operation: "+",
+  useLikeDenominators: false,
 };
 
 export const paramSchema: ParamSchemaItem[] = [
@@ -104,6 +110,13 @@ export const paramSchema: ParamSchemaItem[] = [
       { label: "Multiplication (×)", value: "×" },
       { label: "Division (÷)", value: "÷" },
     ],
+  },
+  {
+    name: "useLikeDenominators",
+    label: "Use Like Denominators",
+    type: "boolean",
+    default: defaultParams.useLikeDenominators,
+    fullWidth: true,
   },
   {
     name: "minNumerator",
