@@ -3,7 +3,7 @@ import { WorksheetConfig } from "./types";
 import { generateSeed } from "./lib/utils";
 import WorksheetControls from "./components/WorksheetControls";
 import WorksheetPreview from "./components/WorksheetPreview";
-import { Menu, X } from "lucide-react";
+import { Menu, FileText } from "lucide-react";
 
 const DEFAULT_CONFIG: WorksheetConfig = {
   version: "1.0.0",
@@ -69,7 +69,7 @@ export default function App() {
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         className="fixed bottom-6 left-6 z-50 p-4 bg-black text-white rounded-full shadow-2xl md:hidden print:hidden"
       >
-        {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        {isSidebarOpen ? <FileText size={24} /> : <Menu size={24} />}
       </button>
 
       {/* Left Panel: Controls */}
@@ -87,10 +87,10 @@ export default function App() {
         <WorksheetPreview config={config} showAnswers={showAnswers} />
         
         {/* Floating Print Toggle for UI convenience */}
-        <div className="absolute top-6 right-6 flex gap-2 print:hidden">
+        <div className={`fixed bottom-6 right-6 z-50 flex gap-2 print:hidden transition-opacity duration-300 ${isSidebarOpen ? "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto" : "opacity-100"}`}>
           <button
             onClick={() => setShowAnswers(!showAnswers)}
-            className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-lg transition-all ${
+            className={`px-6 py-4 rounded-full text-xs font-black uppercase tracking-widest shadow-2xl transition-all ${
               showAnswers ? "bg-red-600 text-white" : "bg-white text-gray-900 border border-gray-200"
             }`}
           >

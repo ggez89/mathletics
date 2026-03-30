@@ -4,6 +4,7 @@ import seedrandom from "seedrandom";
 import { WorksheetConfig, Problem } from "../types";
 import { weightedRandom, encodeConfig, generateTitle } from "../lib/utils";
 import ProblemRenderer from "./ProblemRenderer";
+import { Plus, Minus, X, Divide } from "lucide-react";
 import * as fractionModule from "../modules/fraction";
 import * as longDivisionModule from "../modules/longDivision";
 import * as arithmeticModule from "../modules/arithmetic";
@@ -121,10 +122,18 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
             <header className="mb-8 space-y-4">
             <div className="flex justify-between items-end border-b-4 border-black pb-4">
               <div className="flex-1 min-w-0 pr-12">
-                <h1 className="text-4xl font-black uppercase tracking-tighter leading-none break-words">
-                  {displayTitle}
-                </h1>
-                <div className="flex items-center gap-3 mt-3 h-5">
+                <div className="flex items-center gap-4">
+                  <div className="grid grid-cols-2 gap-0.5 p-1 bg-white border-2 border-black rounded shadow-sm shrink-0">
+                    <Plus size={16} strokeWidth={3} className="text-black" />
+                    <Minus size={16} strokeWidth={3} className="text-black" />
+                    <X size={16} strokeWidth={3} className="text-black" />
+                    <Divide size={16} strokeWidth={3} className="text-black" />
+                  </div>
+                  <h1 className="text-4xl font-black uppercase tracking-tighter leading-none break-words">
+                    {displayTitle}
+                  </h1>
+                </div>
+                <div className="flex items-center gap-3 mt-3 h-5 ml-[68px]">
                   {showAnswers && (
                     <span className="px-3 py-1 bg-red-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest">
                       Answer Key
@@ -145,7 +154,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
                 <div className="flex items-center gap-2 text-sm font-bold whitespace-nowrap">
                   <span>Score:</span>
                   <div className="w-16 border-b-2 border-black h-5 flex items-center justify-end pr-1">
-                    <span className="text-black">/ {problems.length}</span>
+                    <span className="text-black font-normal">/ {problems.length}</span>
                   </div>
                 </div>
               </div>

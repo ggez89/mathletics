@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { WorksheetConfig, ProblemDefinition, ParamSchemaItem } from "../types";
 import { generateSeed, encodeConfig, decodeConfig, generateTitle, calculateAutoProblemsPerPage } from "../lib/utils";
-import { Plus, Trash2, RefreshCw, Printer, Key, Save, FolderOpen, Wand2, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, Trash2, RefreshCw, Printer, Key, Save, FolderOpen, Wand2, ChevronDown, ChevronUp, Minus, X, Divide } from "lucide-react";
 import * as fractionModule from "../modules/fraction";
 import * as longDivisionModule from "../modules/longDivision";
 import * as arithmeticModule from "../modules/arithmetic";
@@ -110,6 +110,23 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
   return (
     <div className="h-full flex flex-col bg-gray-50 border-r border-gray-200">
       <div className="flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar">
+        <header className="flex flex-col items-center gap-1 md:gap-3 pb-2 md:pb-4 border-b border-gray-200">
+          <div className="flex items-center justify-center gap-2">
+            <div className="grid grid-cols-2 gap-0.5 p-1 bg-white border border-black rounded shadow-sm">
+              <Plus size={12} strokeWidth={3} className="text-black" />
+              <Minus size={12} strokeWidth={3} className="text-black" />
+              <X size={12} strokeWidth={3} className="text-black" />
+              <Divide size={12} strokeWidth={3} className="text-black" />
+            </div>
+            <h1 className="text-xl md:text-2xl font-light tracking-widest text-black uppercase">
+              Mathletics
+            </h1>
+          </div>
+          <p className="hidden md:block text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em]">
+            Worksheet Generator
+          </p>
+        </header>
+
         <section className="space-y-4">
           <div className="grid grid-cols-2 gap-2">
             <button
@@ -468,8 +485,8 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
         </section>
       </div>
 
-      <footer className="p-6 border-t border-gray-200 bg-white">
-        <p className="text-[10px] text-gray-400 text-center leading-relaxed">
+      <footer className="p-3 md:p-6 border-t border-gray-200 bg-white">
+        <p className="text-[9px] md:text-[10px] text-gray-400 text-center leading-relaxed">
           Made with love for my family by Patrick Young.<br />
           © 2026 Patrick Young. All rights reserved.
         </p>
