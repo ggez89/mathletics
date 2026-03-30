@@ -66,7 +66,7 @@ export function generateTitle(config: WorksheetConfig): string {
   const types = Array.from(new Set(config.problemSets.map((s) => s.type)));
   const typeLabels = types.map((t) => {
     if (t === "arithmetic") return "Arithmetic";
-    if (t === "fraction") return "Fractions";
+    if (t === "fraction") return "Fraction Operations";
     if (t === "longDivision") return "Division";
     return t;
   });
@@ -79,9 +79,49 @@ export function generateTitle(config: WorksheetConfig): string {
     } else if (set.type === "longDivision") {
       title = "Long Division Practice";
     } else if (set.type === "fraction") {
-      title = "Fraction Operations";
+      const op = set.params.operation;
+      const opLabel = op === "+" ? "Addition" : op === "-" ? "Subtraction" : op === "×" ? "Multiplication" : op === "÷" ? "Division" : "Operations";
+      title = `Fraction ${opLabel}`;
     }
   }
 
   return `${title}`;
+}
+
+/**
+ * Calculates the maximum number of problems that can fit on a page based on layout settings.
+ */
+export function calculateAutoProblemsPerPage(config: WorksheetConfig): number {
+  // Heuristic: 11in page = 1056px. Subtract margins (64px), header (~150px), footer (~120px)
+  const availableHeight = 1056 - 64 - 150 - 120;
+  
+  let maxProblemHeight = 0;
+  
+  config.problemSets.forEach(s => {
+    const format = s.params?.format || (s.type === "fraction" ? "fraction" : s.type === "longDivision" ? "longDivision" : "inline");
+    let h = 0;
+    switch (format) {
+      case "longDivision":
+        h = 80;
+        break;
+      case "vertical":
+        h = config.layout.fontSize * 3 + 40;
+        break;
+      case "fraction":
+        h = Math.max(40, config.layout.fontSize * 2.5);
+        break;
+      case "inline":
+      default:
+        h = Math.max(32, config.layout.fontSize * 1.5);
+        break;
+    }
+    maxProblemHeight = Math.max(maxProblemHeight, h);
+  });
+
+  // Add renderer padding (py-2 = 16px total) and spacing
+  const estimatedProblemHeight = maxProblemHeight + config.layout.spacing + 16;
+  const rows = Math.max(1, Math.floor(availableHeight / estimatedProblemHeight));
+  const calculatedPerPage = rows * config.layout.problemsPerRow;
+  
+  return calculatedPerPage;
 }

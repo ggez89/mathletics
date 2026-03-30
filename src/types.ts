@@ -47,6 +47,10 @@ export interface LayoutSettings {
   title: string;
   showAnswers: boolean;
   showSeed: boolean;
+  showConfigKey: boolean;
+  paginationMode: "count" | "pages";
+  problemsPerPage: number;
+  pageCount: number;
 }
 
 export interface WorksheetConfig {

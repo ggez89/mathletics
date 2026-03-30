@@ -3,21 +3,41 @@ import { ProblemData } from "../../types";
 
 export default function LongDivisionRenderer({ data, showAnswer, answer }: { data: ProblemData; showAnswer: boolean; answer: string }) {
   const { dividend, divisor } = data;
+  const formatNum = (n: number) => n.toString().replace("-", "−");
+
   return (
-    <div className="flex flex-col items-start gap-1 font-mono text-lg">
+    <div className="flex flex-col items-start gap-1 font-mono">
       <div className="flex items-end">
-        <div className="pr-2 pb-1">{divisor}</div>
-        <div className="relative border-l-2 border-t-2 border-black px-4 py-1 min-w-[5rem]">
-          {dividend}
+        <div className="pr-1 pb-1">{formatNum(divisor)}</div>
+        <div className="relative px-2 py-1 min-w-[5rem]">
+          {/* Full Bracket SVG */}
+          <svg 
+            className="absolute inset-0 w-full h-full pointer-events-none overflow-visible" 
+            viewBox="0 0 100 40" 
+            preserveAspectRatio="none"
+          >
+            <path 
+              d="M 5 40 Q 18 20 5 0 L 100 0" 
+              fill="none" 
+              stroke="black" 
+              strokeWidth="2" 
+              vectorEffect="non-scaling-stroke"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <div className="relative z-10 pl-4">
+            {formatNum(dividend)}
+          </div>
           {showAnswer && (
-            <div className="absolute -top-8 left-4 text-red-600 font-bold">
+            <div className="absolute -top-5 left-4 text-red-600 font-bold z-20">
               {answer}
             </div>
           )}
         </div>
       </div>
       {/* Blank space for long division work */}
-      <div className="h-24 w-full border-b border-dashed border-gray-300"></div>
+      <div className="h-12 w-full border-b border-dashed border-gray-300"></div>
     </div>
   );
 }

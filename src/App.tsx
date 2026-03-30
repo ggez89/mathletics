@@ -3,6 +3,7 @@ import { WorksheetConfig } from "./types";
 import { generateSeed } from "./lib/utils";
 import WorksheetControls from "./components/WorksheetControls";
 import WorksheetPreview from "./components/WorksheetPreview";
+import { Menu, X } from "lucide-react";
 
 const DEFAULT_CONFIG: WorksheetConfig = {
   version: "1.0.0",
@@ -14,6 +15,10 @@ const DEFAULT_CONFIG: WorksheetConfig = {
     title: "", // Empty for auto-generation
     showAnswers: false,
     showSeed: false,
+    showConfigKey: false,
+    paginationMode: "count",
+    problemsPerPage: 20,
+    pageCount: 1,
   },
   problemSets: [
     {
@@ -36,6 +41,7 @@ const DEFAULT_CONFIG: WorksheetConfig = {
 export default function App() {
   const [config, setConfig] = useState<WorksheetConfig>(DEFAULT_CONFIG);
   const [showAnswers, setShowAnswers] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Load initial config from URL if present
   useEffect(() => {
@@ -57,14 +63,27 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden font-sans text-gray-900">
+    <div className="flex h-screen bg-gray-100 overflow-hidden font-sans text-gray-900 print:h-auto print:overflow-visible">
+      {/* Mobile Sidebar Toggle */}
+      <button
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        className="fixed bottom-6 left-6 z-50 p-4 bg-black text-white rounded-full shadow-2xl md:hidden print:hidden"
+      >
+        {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
       {/* Left Panel: Controls */}
-      <aside className="w-96 flex-shrink-0 print:hidden">
+      <aside 
+        className={`
+          fixed inset-y-0 left-0 z-40 w-full md:w-96 md:relative md:translate-x-0 transition-transform duration-300 ease-in-out bg-white border-r border-gray-200 print:hidden
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
+      >
         <WorksheetControls config={config} onChange={setConfig} onPrint={handlePrint} />
       </aside>
 
       {/* Right Panel: Preview */}
-      <main className="flex-1 overflow-hidden relative">
+      <main className="flex-1 overflow-hidden relative print:h-auto print:overflow-visible">
         <WorksheetPreview config={config} showAnswers={showAnswers} />
         
         {/* Floating Print Toggle for UI convenience */}

@@ -1,5 +1,7 @@
 # Mathletics - Worksheet Generation
 
+[View App](https://ais-pre-wj5znmux2hmwgtd4j2ludg-324883029911.us-east1.run.app)
+
 A professional, highly customizable math worksheet generator designed for educators and parents. Create high-quality, printable math practice sheets in seconds with precise control over problem types, difficulty levels, and layout.
 
 ## Features
@@ -14,16 +16,17 @@ A professional, highly customizable math worksheet generator designed for educat
   - Toggle "Allow Remainders" for division with proper `Quotient R Remainder` formatting.
   - "Disallow Quotient 1" option to ensure meaningful practice.
 - **Professional Layout**:
-  - Choose between **Inline** and **Vertical** problem formats.
+  - Choose between **Inline**, **Vertical**, **Fraction**, and **Long Division** problem formats.
   - Adjust font size, spacing, and problems per row.
-  - Automatic descriptive title generation based on parameters.
+  - Automatic descriptive title generation (e.g., "Fraction Addition," "Long Division Practice").
+- **Modern Web Features**:
+  - **Mobile Optimized**: "Shrink-to-fit" responsive scaling ensures worksheets are perfectly visible on any device.
+  - **Base64 Config Sharing**: Encode your entire worksheet configuration into a URL-safe key for easy sharing and reproducibility.
+  - **Presets**: Save and load your favorite configurations directly to/from your browser's local storage.
 - **Print & Save**:
-  - **Print Ready**: Optimized CSS for clean, professional printing.
+  - **Print Ready**: Optimized CSS for clean, professional printing on standard 8.5" x 11" paper.
   - **Save as PDF**: Use the "Print Worksheet" button to save directly to your device as a PDF via your browser's print dialog.
   - **Answer Key**: Toggleable answer key for quick grading.
-- **Reproducibility**:
-  - Seed-based generation allows you to recreate the exact same worksheet later.
-  - Optional "Show Seed" toggle for administrative tracking.
 
 ## Getting Started
 
@@ -41,4 +44,4 @@ A professional, highly customizable math worksheet generator designed for educat
 - **Seedrandom**: Predictable random number generation.
 
 ---
-*Created for educators who value precision and simplicity.*
+*Made with love for my family by Patrick Young.*

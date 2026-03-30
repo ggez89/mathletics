@@ -3,12 +3,14 @@ import { ProblemData } from "../../types";
 
 export default function VerticalRenderer({ data, showAnswer, answer }: { data: ProblemData; showAnswer: boolean; answer: string }) {
   const { a, b, operation } = data;
+  const formatNum = (n: number) => n.toString().replace("-", "−");
+
   return (
-    <div className="flex flex-col items-end gap-1 font-mono text-xl min-w-[4rem]">
-      <div className="pr-1">{a}</div>
+    <div className="flex flex-col items-end gap-1 font-mono min-w-[4rem]">
+      <div className="pr-1">{formatNum(a)}</div>
       <div className="border-b-2 border-black w-full flex justify-between items-center pb-1">
         <span>{operation}</span>
-        <span className="pr-1">{b}</span>
+        <span className="pr-1">{formatNum(b)}</span>
       </div>
       <div className="h-8 flex items-center justify-end w-full">
         {showAnswer && <span className="text-red-600 font-bold pr-1">{answer}</span>}

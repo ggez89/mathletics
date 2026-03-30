@@ -9,6 +9,11 @@
   body {
     @apply antialiased;
   }
+
+  ::selection {
+    background-color: #e5e7eb; /* gray-200 */
+    color: #111827; /* gray-900 */
+  }
 }
 
 @media print {
@@ -17,6 +22,11 @@
     margin: 0;
   }
   
+  html, body, #root {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
   .print\:hidden {
     display: none !important;
   }
