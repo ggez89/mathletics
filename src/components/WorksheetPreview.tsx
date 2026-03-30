@@ -23,7 +23,9 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
     const rng = seedrandom(config.seed);
     const generated: Problem[] = [];
 
-    const weights = config.problemSets.map((s) => s.weight);
+    if (!config.problemSets || config.problemSets.length === 0) return [];
+
+    const weights = config.problemSets.map((s) => s.weight || 0);
 
     for (let i = 0; i < config.count; i++) {
       const selectedSet = weightedRandom(config.problemSets, weights, rng);

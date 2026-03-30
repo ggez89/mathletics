@@ -1,4 +1,4 @@
-# Math Worksheet Generator
+# Mathletics - Worksheet Generation
 
 A professional, highly customizable math worksheet generator designed for educators and parents. Create high-quality, printable math practice sheets in seconds with precise control over problem types, difficulty levels, and layout.
 
@@ -7,7 +7,7 @@ A professional, highly customizable math worksheet generator designed for educat
 - **Multiple Problem Modules**:
   - **Basic Arithmetic**: Addition, Subtraction, Multiplication (×), and Division (÷).
   - **Long Division**: Customizable dividend and divisor ranges with remainder toggles.
-  - **Fractions**: Addition, Subtraction, Multiplication, and Division with optional unreduced answer forms.
+  - **Fractions**: Addition, Subtraction, Multiplication, and Division with optional unreduced answer forms and "Like Denominators" mode.
 - **Advanced Customization**:
   - Set minimum and maximum values for operands.
   - Enforce "Max Answer" limits across all operations.
@@ -17,9 +17,9 @@ A professional, highly customizable math worksheet generator designed for educat
   - Choose between **Inline** and **Vertical** problem formats.
   - Adjust font size, spacing, and problems per row.
   - Automatic descriptive title generation based on parameters.
-- **Export & Print**:
-  - **Export PDF**: Save worksheets directly to your device as high-quality PDF files.
+- **Print & Save**:
   - **Print Ready**: Optimized CSS for clean, professional printing.
+  - **Save as PDF**: Use the "Print Worksheet" button to save directly to your device as a PDF via your browser's print dialog.
   - **Answer Key**: Toggleable answer key for quick grading.
 - **Reproducibility**:
   - Seed-based generation allows you to recreate the exact same worksheet later.
@@ -30,15 +30,15 @@ A professional, highly customizable math worksheet generator designed for educat
 1. Select a problem type from the sidebar.
 2. Adjust the parameters (ranges, operations, layout) to fit your needs.
 3. Preview the worksheet in real-time on the right.
-4. Click **Export PDF** or **Print Worksheet** to save or print your creation.
+4. Click **Print Worksheet** to send to your printer or select "Save as PDF" in the print destination.
 
 ## Tech Stack
 
 - **React**: Modern functional components and hooks.
 - **Tailwind CSS**: Utility-first styling for a clean, responsive interface.
 - **Lucide React**: Beautiful, consistent iconography.
-- **jsPDF & html2canvas**: Robust client-side PDF generation.
 - **UUID**: Unique identification for problem tracking.
+- **Seedrandom**: Predictable random number generation.
 
 ---
 *Created for educators who value precision and simplicity.*

@@ -204,7 +204,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
         </div>
 
         <div className="space-y-4">
-          {config.problemSets.map((set, setIndex) => (
+          {config.problemSets?.map((set, setIndex) => (
             <div key={setIndex} className="p-4 bg-white border border-gray-200 rounded-lg space-y-4 shadow-sm">
               <div className="flex justify-between items-center gap-2">
                 <select
@@ -234,7 +234,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
               </div>
 
               <div className="grid grid-cols-2 gap-x-3 gap-y-2">
-                {PROBLEM_MODULES[set.type].paramSchema.map((param: ParamSchemaItem) => (
+                {PROBLEM_MODULES[set.type]?.paramSchema.map((param: ParamSchemaItem) => (
                   <div key={param.name} className={`space-y-1 ${param.type === "boolean" ? "flex items-center gap-2 pt-4" : ""} ${param.fullWidth ? "col-span-2" : ""}`}>
                     <label className="text-[10px] font-bold text-gray-500 uppercase">{param.label}</label>
                     {param.type === "select" ? (

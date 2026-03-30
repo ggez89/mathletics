@@ -62,7 +62,7 @@ export function weightedRandom<T>(items: T[], weights: number[], rng: () => numb
 }
 
 export function generateTitle(config: WorksheetConfig): string {
-  if (config.problemSets.length === 0) return "Math Worksheet";
+  if (!config.problemSets || config.problemSets.length === 0) return "Math Worksheet";
   const types = Array.from(new Set(config.problemSets.map((s) => s.type)));
   const typeLabels = types.map((t) => {
     if (t === "arithmetic") return "Arithmetic";
