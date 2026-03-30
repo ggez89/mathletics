@@ -111,6 +111,23 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
     <div className="h-full flex flex-col bg-gray-50 border-r border-gray-200">
       <div className="flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar">
         <section className="space-y-4">
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => onPrint(false)}
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-black text-white rounded-md text-sm font-bold hover:bg-gray-800 transition-colors shadow-sm"
+            >
+              <Printer size={16} /> Print Worksheet
+            </button>
+            <button
+              onClick={() => onPrint(true)}
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-white border-2 border-red-600 text-red-600 rounded-md text-sm font-bold hover:bg-red-50 transition-colors shadow-sm"
+            >
+              <Printer size={16} /> Print Answers
+            </button>
+          </div>
+        </section>
+
+        <section className="space-y-4">
           <div className="flex justify-between items-center">
             <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">Global Settings</h2>
             <button
@@ -428,38 +445,26 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                 </div>
                 {error && <p className="text-[10px] text-red-500 font-bold">{error}</p>}
               </div>
+
+              <div className="pt-4 border-t border-gray-100 space-y-3">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Presets</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={savePreset}
+                    className="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md text-xs font-semibold hover:bg-gray-50 transition-colors"
+                  >
+                    <Save size={14} /> Save Preset
+                  </button>
+                  <button
+                    onClick={loadPreset}
+                    className="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md text-xs font-semibold hover:bg-gray-50 transition-colors"
+                  >
+                    <FolderOpen size={14} /> Load Preset
+                  </button>
+                </div>
+              </div>
             </div>
           )}
-        </section>
-
-        <section className="space-y-4 pt-4 border-t border-gray-200">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">Actions</h2>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => onPrint(false)}
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-semibold hover:bg-gray-50 transition-colors"
-            >
-              <Printer size={16} /> Print Worksheet
-            </button>
-            <button
-              onClick={() => onPrint(true)}
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-semibold hover:bg-gray-50 transition-colors"
-            >
-              <Printer size={16} className="text-red-500" /> Print Answers
-            </button>
-            <button
-              onClick={savePreset}
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-semibold hover:bg-gray-50 transition-colors"
-            >
-              <Save size={16} /> Save Preset
-            </button>
-            <button
-              onClick={loadPreset}
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-semibold hover:bg-gray-50 transition-colors"
-            >
-              <FolderOpen size={16} /> Load Preset
-            </button>
-          </div>
         </section>
       </div>
 

@@ -109,22 +109,22 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
       {pages.map((pageProblems, pageIndex) => (
         <div 
           key={pageIndex}
-          className="origin-top transition-transform duration-300"
+          className="origin-top transition-transform duration-300 print:transform-none print:mb-0 print:block"
           style={{ 
             transform: `scale(${scale})`,
             marginBottom: scale < 1 ? `calc(${(1 - scale) * -1056}px + 2rem)` : "0"
           }}
         >
           <div 
-            className="w-[8.5in] min-h-[11in] bg-white shadow-2xl px-8 pt-8 pb-12 flex flex-col print:shadow-none print:w-full print:h-[11in] print:min-h-[11in] print:px-8 print:pt-8 print:pb-12 print:border-0 print:break-after-page"
+            className="w-[8.5in] min-h-[11in] bg-white shadow-2xl px-8 pt-8 pb-12 flex flex-col print:shadow-none print:w-[8.5in] print:h-[11in] print:min-h-[11in] print:px-8 print:pt-8 print:pb-12 print:border-0 print:break-after-page print:mx-auto"
           >
-            <header className="mb-4 space-y-4">
-            <div className="flex justify-between items-start border-b-4 border-black pb-2">
-              <div className="space-y-2">
-                <h1 className="text-4xl font-black uppercase tracking-tighter">
+            <header className="mb-8 space-y-4">
+            <div className="flex justify-between items-end border-b-4 border-black pb-4">
+              <div className="flex-1 min-w-0 pr-12">
+                <h1 className="text-4xl font-black uppercase tracking-tighter leading-none break-words">
                   {displayTitle}
                 </h1>
-                <div className="flex items-center gap-3 h-6">
+                <div className="flex items-center gap-3 mt-3 h-5">
                   {showAnswers && (
                     <span className="px-3 py-1 bg-red-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest">
                       Answer Key
@@ -137,14 +137,14 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
                   )}
                 </div>
               </div>
-              <div className="flex flex-col items-end gap-2">
-                <div className="flex items-center gap-2 text-sm font-bold">
+              <div className="shrink-0 flex flex-col items-end gap-4">
+                <div className="flex items-center gap-2 text-sm font-bold whitespace-nowrap">
                   <span>Name:</span>
-                  <div className="w-48 border-b-2 border-black h-6"></div>
+                  <div className="w-48 border-b-2 border-black h-5"></div>
                 </div>
-                <div className="flex items-center gap-2 text-sm font-bold">
+                <div className="flex items-center gap-2 text-sm font-bold whitespace-nowrap">
                   <span>Score:</span>
-                  <div className="w-16 border-b-2 border-black h-6 flex items-center justify-end pr-1">
+                  <div className="w-16 border-b-2 border-black h-5 flex items-center justify-end pr-1">
                     <span className="text-black">/ {problems.length}</span>
                   </div>
                 </div>

@@ -30,7 +30,7 @@ export const ProblemRenderer: React.FC<ProblemRendererProps> = ({ problem, showA
   };
 
   return (
-    <div className={`flex items-start gap-2 ${format === "longDivision" ? "pt-8 pb-1" : "py-2"} px-2 border border-transparent hover:border-gray-100 transition-colors`}>
+    <div className={`flex items-start gap-2 ${format === "longDivision" ? "pt-8 pb-1 print:pt-10 print:pb-2" : "py-2 print:py-4"} px-2 border border-transparent hover:border-gray-100 transition-colors`}>
       <div className="font-bold text-gray-400 min-w-[1.5rem] pt-1">{number}.</div>
       <div className="flex-1 flex justify-center">
         {renderContent()}
