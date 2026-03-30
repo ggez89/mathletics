@@ -24,7 +24,17 @@
   
   html, body, #root {
     height: auto !important;
+    width: 8.5in !important;
     overflow: visible !important;
+  }
+
+  /* Force reset of any scaling applied for mobile preview */
+  .worksheet-page-wrapper {
+    transform: none !important;
+    margin: 0 !important;
+    width: 8.5in !important;
+    height: 11in !important;
+    display: block !important;
   }
 
   .print\:hidden {

@@ -83,7 +83,7 @@ export default function App() {
       </aside>
 
       {/* Right Panel: Preview */}
-      <main className="flex-1 overflow-hidden relative print:h-auto print:overflow-visible">
+      <main className="flex-1 overflow-hidden relative print:h-auto print:overflow-visible print:block print:w-full">
         <WorksheetPreview config={config} showAnswers={showAnswers} />
         
         {/* Floating Print Toggle for UI convenience */}

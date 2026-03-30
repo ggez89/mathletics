@@ -104,12 +104,12 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
   return (
     <div 
       ref={containerRef}
-      className="h-full overflow-y-auto p-4 md:p-12 bg-gray-200 flex flex-col items-center gap-8 md:gap-12 no-scrollbar print:p-0 print:bg-white print:overflow-visible print:h-auto print:gap-0"
+      className="h-full overflow-y-auto p-4 md:p-12 bg-gray-200 flex flex-col items-center gap-8 md:gap-12 no-scrollbar print:p-0 print:bg-white print:overflow-visible print:h-auto print:gap-0 print:block"
     >
       {pages.map((pageProblems, pageIndex) => (
         <div 
           key={pageIndex}
-          className="origin-top transition-transform duration-300 print:transform-none print:mb-0 print:block"
+          className="worksheet-page-wrapper origin-top transition-transform duration-300 print:transform-none print:mb-0 print:block"
           style={{ 
             transform: `scale(${scale})`,
             marginBottom: scale < 1 ? `calc(${(1 - scale) * -1056}px + 2rem)` : "0"
