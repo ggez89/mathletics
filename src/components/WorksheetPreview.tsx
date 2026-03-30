@@ -72,7 +72,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
               </div>
               <div className="flex items-center gap-2 text-sm font-bold">
                 <span>Score:</span>
-                <div className="w-16 border-b-2 border-black h-6 flex items-center justify-center">
+                <div className="w-16 border-b-2 border-black h-6 flex items-center justify-end pr-1">
                   <span className="text-black">/ {config.count}</span>
                 </div>
               </div>
