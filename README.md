@@ -1,6 +1,6 @@
 # Mathletics - Worksheet Generation
 
-[View App](https://ais-pre-wj5znmux2hmwgtd4j2ludg-324883029911.us-east1.run.app)
+[View App](https://ggez89.github.io/mathletics/)
 
 A professional, highly customizable math worksheet generator designed for educators and parents. Create high-quality, printable math practice sheets in seconds with precise control over problem types, difficulty levels, and layout.
 
