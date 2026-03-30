@@ -1,20 +1,44 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Math Worksheet Generator
 
-# Run and deploy your AI Studio app
+A professional, highly customizable math worksheet generator designed for educators and parents. Create high-quality, printable math practice sheets in seconds with precise control over problem types, difficulty levels, and layout.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/5dd26301-d9ea-43a0-bf43-4e1e27009dc2
+- **Multiple Problem Modules**:
+  - **Basic Arithmetic**: Addition, Subtraction, Multiplication (×), and Division (÷).
+  - **Long Division**: Customizable dividend and divisor ranges with remainder toggles.
+  - **Fractions**: Addition, Subtraction, Multiplication, and Division with optional unreduced answer forms.
+- **Advanced Customization**:
+  - Set minimum and maximum values for operands.
+  - Enforce "Max Answer" limits across all operations.
+  - Toggle "Allow Remainders" for division with proper `Quotient R Remainder` formatting.
+  - "Disallow Quotient 1" option to ensure meaningful practice.
+- **Professional Layout**:
+  - Choose between **Inline** and **Vertical** problem formats.
+  - Adjust font size, spacing, and problems per row.
+  - Automatic descriptive title generation based on parameters.
+- **Export & Print**:
+  - **Export PDF**: Save worksheets directly to your device as high-quality PDF files.
+  - **Print Ready**: Optimized CSS for clean, professional printing.
+  - **Answer Key**: Toggleable answer key for quick grading.
+- **Reproducibility**:
+  - Seed-based generation allows you to recreate the exact same worksheet later.
+  - Optional "Show Seed" toggle for administrative tracking.
 
-## Run Locally
+## Getting Started
 
-**Prerequisites:**  Node.js
+1. Select a problem type from the sidebar.
+2. Adjust the parameters (ranges, operations, layout) to fit your needs.
+3. Preview the worksheet in real-time on the right.
+4. Click **Export PDF** or **Print Worksheet** to save or print your creation.
 
+## Tech Stack
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- **React**: Modern functional components and hooks.
+- **Tailwind CSS**: Utility-first styling for a clean, responsive interface.
+- **Lucide React**: Beautiful, consistent iconography.
+- **jsPDF & html2canvas**: Robust client-side PDF generation.
+- **UUID**: Unique identification for problem tracking.
+
+---
+*Created for educators who value precision and simplicity.*

@@ -38,13 +38,26 @@ export function generate(rng: () => number, params: any = {}): Problem {
       b = randInt(rng, minVal, Math.min(maxVal, Math.max(minVal, Math.floor(maxAnswer / a))));
       break;
     case "÷":
+      const disallowOne = params.disallowOne ?? true;
       if (params.allowRemainder) {
         // a / b. We want a <= maxVal, b <= maxVal, quotient <= maxAnswer.
         b = randInt(rng, minVal, maxVal);
         // a / b < maxAnswer + 1 => a < (maxAnswer + 1) * b
         const effectiveMaxA = Math.min(maxVal, (maxAnswer + 1) * b - 1);
-        const effectiveMinA = Math.max(minVal, b); // Usually dividend >= divisor for basic division
-        a = randInt(rng, Math.min(effectiveMinA, effectiveMaxA), effectiveMaxA);
+        // If disallowOne is true, we want quotient >= 2, so a >= 2 * b
+        const effectiveMinA = Math.max(minVal, disallowOne ? 2 * b : b); 
+        
+        if (effectiveMinA <= effectiveMaxA) {
+          a = randInt(rng, effectiveMinA, effectiveMaxA);
+        } else {
+          // Fallback: if we can't satisfy disallowOne, try without it
+          const fallbackMinA = Math.max(minVal, b);
+          if (fallbackMinA <= effectiveMaxA) {
+            a = randInt(rng, fallbackMinA, effectiveMaxA);
+          } else {
+            a = b; // Absolute fallback
+          }
+        }
       } else {
         // a / b = quotient. We want a <= maxVal, b <= maxVal, quotient <= maxAnswer.
         // a = quotient * b.
@@ -53,7 +66,7 @@ export function generate(rng: () => number, params: any = {}): Problem {
         // quotient * b <= maxVal => quotient <= maxVal / b
         const maxQ = Math.min(maxAnswer, Math.floor(maxVal / b));
         // quotient * b >= minVal => quotient >= minVal / b
-        const minQ = Math.max(1, Math.ceil(minVal / b));
+        const minQ = Math.max(disallowOne ? 2 : 1, Math.ceil(minVal / b));
         
         if (minQ <= maxQ) {
           const quotient = randInt(rng, minQ, maxQ);
@@ -63,13 +76,29 @@ export function generate(rng: () => number, params: any = {}): Problem {
           let found = false;
           for (let testB = minVal; testB <= maxVal; testB++) {
             const tMaxQ = Math.min(maxAnswer, Math.floor(maxVal / testB));
-            const tMinQ = Math.max(1, Math.ceil(minVal / testB));
+            const tMinQ = Math.max(disallowOne ? 2 : 1, Math.ceil(minVal / testB));
             if (tMinQ <= tMaxQ) {
               b = testB;
               const quotient = randInt(rng, tMinQ, tMaxQ);
               a = quotient * testB;
               found = true;
               break;
+            }
+          }
+          if (!found) {
+            // If still not found and disallowOne was true, try with quotient 1
+            if (disallowOne) {
+              for (let testB = minVal; testB <= maxVal; testB++) {
+                const tMaxQ = Math.min(maxAnswer, Math.floor(maxVal / testB));
+                const tMinQ = Math.max(1, Math.ceil(minVal / testB));
+                if (tMinQ <= tMaxQ) {
+                  b = testB;
+                  const quotient = randInt(rng, tMinQ, tMaxQ);
+                  a = quotient * testB;
+                  found = true;
+                  break;
+                }
+              }
             }
           }
           if (!found) {
@@ -138,9 +167,22 @@ export const defaultParams = {
   format: "inline",
   nonNegative: true,
   allowRemainder: false,
+  disallowOne: true,
 };
 
 export const paramSchema: ParamSchemaItem[] = [
+  {
+    name: "operation",
+    label: "Operation",
+    type: "select",
+    default: defaultParams.operation,
+    options: [
+      { label: "Addition (+)", value: "+" },
+      { label: "Subtraction (-)", value: "-" },
+      { label: "Multiplication (×)", value: "×" },
+      { label: "Division (÷)", value: "÷" },
+    ],
+  },
   {
     name: "minVal",
     label: "Min Value",
@@ -158,18 +200,6 @@ export const paramSchema: ParamSchemaItem[] = [
     label: "Max Answer",
     type: "number",
     default: defaultParams.maxAnswer,
-  },
-  {
-    name: "operation",
-    label: "Operation",
-    type: "select",
-    default: defaultParams.operation,
-    options: [
-      { label: "Addition (+)", value: "+" },
-      { label: "Subtraction (-)", value: "-" },
-      { label: "Multiplication (×)", value: "×" },
-      { label: "Division (÷)", value: "÷" },
-    ],
   },
   {
     name: "format",
@@ -192,5 +222,11 @@ export const paramSchema: ParamSchemaItem[] = [
     label: "Allow remainders (Division)",
     type: "boolean",
     default: defaultParams.allowRemainder,
+  },
+  {
+    name: "disallowOne",
+    label: "Disallow Quotient 1 (Division)",
+    type: "boolean",
+    default: defaultParams.disallowOne,
   },
 ];

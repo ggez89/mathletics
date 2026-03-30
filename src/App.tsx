@@ -19,7 +19,15 @@ const DEFAULT_CONFIG: WorksheetConfig = {
     {
       type: "arithmetic",
       weight: 1,
-      params: { minVal: 1, maxVal: 20, operation: "+", format: "inline", nonNegative: true },
+      params: { 
+        minVal: 1, 
+        maxVal: 10, 
+        maxAnswer: 20, 
+        operation: "+", 
+        format: "inline", 
+        nonNegative: true,
+        disallowOne: true 
+      },
     },
   ],
   count: 20,

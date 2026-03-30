@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { WorksheetConfig, ProblemDefinition, ParamSchemaItem } from "../types";
 import { generateSeed, encodeConfig, decodeConfig, generateTitle } from "../lib/utils";
-import { Plus, Trash2, RefreshCw, Printer, Key, Save, FolderOpen, Wand2, Download } from "lucide-react";
+import { Plus, Trash2, RefreshCw, Printer, Key, Save, FolderOpen, Wand2 } from "lucide-react";
 import * as fractionModule from "../modules/fraction";
 import * as longDivisionModule from "../modules/longDivision";
 import * as arithmeticModule from "../modules/arithmetic";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 
 const PROBLEM_MODULES: { [key: string]: any } = {
   fraction: fractionModule,
@@ -23,7 +21,6 @@ interface WorksheetControlsProps {
 export default function WorksheetControls({ config, onChange, onPrint }: WorksheetControlsProps) {
   const [base64Input, setBase64Input] = useState("");
   const [error, setError] = useState("");
-  const [isExporting, setIsExporting] = useState(false);
 
   const updateLayout = (key: keyof WorksheetConfig["layout"], value: any) => {
     onChange({
@@ -107,38 +104,6 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
 
   const handleRegenerateTitle = () => {
     updateLayout("title", generateTitle(config));
-  };
-
-  const handleExportPDF = async () => {
-    const element = document.getElementById("worksheet-content");
-    if (!element) return;
-
-    setIsExporting(true);
-    try {
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "in",
-        format: "letter",
-      });
-
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`${config.layout.title || "worksheet"}.pdf`);
-    } catch (err) {
-      console.error("Export failed", err);
-      alert("Failed to export PDF. Try printing to PDF instead.");
-    } finally {
-      setIsExporting(false);
-    }
   };
 
   return (
@@ -287,7 +252,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                     ) : param.type === "boolean" ? (
                       <input
                         type="checkbox"
-                        checked={set.params[param.name] ?? false}
+                        checked={set.params[param.name] ?? param.default}
                         onChange={(e) => updateParams(setIndex, param.name, e.target.checked)}
                         className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
                       />
@@ -329,14 +294,6 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
             <Printer size={16} className="text-red-500" /> Print Answers
           </button>
           <button
-            onClick={handleExportPDF}
-            disabled={isExporting}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-black text-white border border-black rounded-md text-sm font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50"
-          >
-            {isExporting ? <RefreshCw size={16} className="animate-spin" /> : <Download size={16} />} 
-            {isExporting ? "Exporting..." : "Export PDF"}
-          </button>
-          <button
             onClick={savePreset}
             className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-semibold hover:bg-gray-50 transition-colors"
           >
@@ -351,7 +308,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
         </div>
 
         <p className="text-[10px] text-gray-400 italic">
-          Note: Print buttons trigger the browser's print dialog. Export PDF will download a file directly.
+          Note: Print buttons trigger the browser's print dialog.
         </p>
 
         <div className="space-y-2">
