@@ -184,7 +184,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
           }}
         >
           <div 
-            className="w-[8.5in] h-[11in] max-h-[11in] bg-white shadow-2xl px-8 pt-8 pb-8 flex flex-col overflow-hidden print:shadow-none print:w-[8.5in] print:h-[11in] print:min-h-[11in] print:px-8 print:pt-8 print:pb-8 print:border-0 print:break-after-page print:mx-auto"
+            className="relative w-[8.5in] h-[11in] max-h-[11in] bg-white shadow-2xl px-8 pt-8 pb-8 flex flex-col overflow-hidden print:shadow-none print:w-[8.5in] print:h-[11in] print:min-h-[11in] print:px-8 print:pt-8 print:pb-8 print:border-0 print:break-after-page print:mx-auto"
           >
             <header className="mb-6 space-y-4">
             <div className="flex justify-between items-end border-b-4 border-black pb-4">
@@ -249,7 +249,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
             ))}
           </main>
 
-          <footer className="mt-auto pt-8 flex justify-between items-end text-[9px] text-gray-400 font-mono">
+          <footer className="mt-auto pt-8 flex justify-between items-end text-[9px] text-gray-400 font-mono print:absolute print:bottom-8 print:left-8 print:right-8 print:pt-0 print:text-gray-600">
             <div className="flex-1">
               {config.layout.showConfigKey && (
                 <div className="max-w-[80%] break-all mb-2">
@@ -257,11 +257,11 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
                   {base64Key}
                 </div>
               )}
-              <div className="text-gray-400 text-[11px]">https://ggez89.github.io/mathletics/</div>
+              <div className="text-gray-400 text-[11px] print:text-gray-600">https://ggez89.github.io/mathletics/</div>
             </div>
             <div className="text-right whitespace-nowrap">
               {pages.length > 1 && (
-                <div className="text-gray-500 font-bold text-[11px]">PAGE {pageIndex + 1} OF {pages.length}</div>
+                <div className="text-gray-500 font-bold text-[11px] print:text-gray-700">PAGE {pageIndex + 1} OF {pages.length}</div>
               )}
             </div>
           </footer>
