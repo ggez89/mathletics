@@ -5,10 +5,32 @@ function randInt(rng: () => number, min: number, max: number) {
   return Math.floor(rng() * (max - min + 1)) + min;
 }
 
+function hasCarryover(a: number, b: number, operation: string): boolean {
+  const sA = Math.abs(a).toString();
+  const sB = Math.abs(b).toString();
+  const maxLen = Math.max(sA.length, sB.length);
+  
+  const padA = sA.padStart(maxLen, '0');
+  const padB = sB.padStart(maxLen, '0');
+  
+  // We check from right to left (ones, tens, etc.)
+  for (let i = 0; i < maxLen; i++) {
+    const digitA = parseInt(padA[maxLen - 1 - i]);
+    const digitB = parseInt(padB[maxLen - 1 - i]);
+    
+    if (operation === "+") {
+      if (digitA + digitB >= 10) return true;
+    } else {
+      if (digitA < digitB) return true;
+    }
+  }
+  return false;
+}
+
 export function generate(rng: () => number, params: any = {}): Problem {
-  const minVal = params.minVal ?? 1;
-  const maxVal = params.maxVal ?? 100;
-  const maxAnswer = params.maxAnswer ?? 1000;
+  const minVal = Number(params.minVal ?? 1);
+  const maxVal = Number(params.maxVal ?? 100);
+  const maxAnswer = Number(params.maxAnswer ?? 1000);
   const operation = params.operation ?? "+";
   const format = params.format ?? "inline";
 
@@ -17,36 +39,113 @@ export function generate(rng: () => number, params: any = {}): Problem {
   let result = 0;
   let displayResult = "";
 
-  const maxAttempts = 100;
+  const maxAttempts = 200;
   let attempts = 0;
+  let found = false;
 
-  while (attempts < maxAttempts) {
+  while (attempts < maxAttempts && !found) {
     attempts++;
-    a = randInt(rng, minVal, maxVal);
-    b = randInt(rng, minVal, maxVal);
+    
+    let nextA = 0;
+    let nextB = 0;
+    let nextResult = 0;
+    let respectsStructural = true;
 
     if (operation === "+") {
-      result = a + b;
-    } else if (operation === "-" || operation === "−") {
-      result = a - b;
-      if (params.nonNegative && result < 0) continue;
-    } else if (operation === "×") {
-      result = a * b;
-    } else if (operation === "÷") {
-      if (b === 0) continue;
-      const disallowOne = params.disallowOne ?? true;
-      if (params.allowRemainder) {
-        if (disallowOne && Math.floor(a / b) === 1) continue;
-        result = Math.floor(a / b);
+      // a + b <= maxAnswer
+      // Also a >= minVal, b >= minVal
+      // So a <= maxAnswer - minVal
+      const effMaxA = Math.min(maxVal, maxAnswer - minVal);
+      if (effMaxA < minVal) {
+        // Impossible to satisfy minVal and maxAnswer
+        nextA = minVal;
+        nextB = minVal;
       } else {
-        if (a % b !== 0) continue;
-        result = a / b;
-        if (disallowOne && result === 1) continue;
+        nextA = randInt(rng, minVal, effMaxA);
+        const effMaxB = Math.min(maxVal, maxAnswer - nextA);
+        if (effMaxB < minVal) {
+          nextB = minVal;
+        } else {
+          nextB = randInt(rng, minVal, effMaxB);
+        }
+      }
+      nextResult = nextA + nextB;
+      if (params.disallowCarryover && hasCarryover(nextA, nextB, "+")) respectsStructural = false;
+    } else if (operation === "-" || operation === "−") {
+      // abs(a - b) <= maxAnswer
+      nextA = randInt(rng, minVal, maxVal);
+      
+      // We need |nextA - nextB| <= maxAnswer
+      // -maxAnswer <= nextA - nextB <= maxAnswer
+      // nextB >= nextA - maxAnswer
+      // nextB <= nextA + maxAnswer
+      let minB = Math.max(minVal, nextA - maxAnswer);
+      let maxB = Math.min(maxVal, nextA + maxAnswer);
+      
+      if (params.nonNegative) {
+        // nextA - nextB >= 0 => nextB <= nextA
+        maxB = Math.min(maxB, nextA);
+      }
+      
+      if (minB > maxB) {
+        nextB = nextA; // Fallback to 0 difference
+      } else {
+        nextB = randInt(rng, minB, maxB);
+      }
+      
+      nextResult = nextA - nextB;
+      if (params.disallowCarryover && hasCarryover(nextA, nextB, "-")) respectsStructural = false;
+    } else if (operation === "×") {
+      // a * b <= maxAnswer
+      const effMaxA = Math.min(maxVal, Math.floor(maxAnswer / Math.max(1, minVal)));
+      if (effMaxA < minVal) {
+        nextA = minVal;
+        nextB = minVal;
+      } else {
+        nextA = randInt(rng, minVal, effMaxA);
+        const effMaxB = Math.min(maxVal, Math.floor(maxAnswer / Math.max(1, nextA)));
+        if (effMaxB < minVal) {
+          nextB = minVal;
+        } else {
+          nextB = randInt(rng, minVal, effMaxB);
+        }
+      }
+      nextResult = nextA * nextB;
+    } else if (operation === "÷") {
+      // a / b <= maxAnswer
+      nextB = randInt(rng, Math.max(1, minVal), maxVal);
+      const disallowOne = params.disallowOne ?? true;
+      
+      if (params.allowRemainder) {
+        const effMaxA = Math.min(maxVal, nextB * maxAnswer + (nextB - 1));
+        if (effMaxA < minVal) {
+          nextA = minVal;
+        } else {
+          nextA = randInt(rng, Math.max(minVal, nextB), effMaxA);
+        }
+        nextResult = Math.floor(nextA / nextB);
+        if (disallowOne && nextResult === 1) respectsStructural = false;
+      } else {
+        const maxK = Math.min(maxAnswer, Math.floor(maxVal / nextB));
+        const minK = Math.max(1, Math.ceil(minVal / nextB));
+        if (minK > maxK) {
+           nextB = Math.max(1, minVal);
+           nextA = nextB;
+           nextResult = 1;
+        } else {
+           const k = randInt(rng, minK, maxK);
+           nextA = nextB * k;
+           nextResult = k;
+        }
+        if (disallowOne && nextResult === 1) respectsStructural = false;
       }
     }
 
-    if (Math.abs(result) <= maxAnswer) {
-      break;
+    if (respectsStructural && Math.abs(nextResult) <= maxAnswer) {
+      a = nextA;
+      b = nextB;
+      result = nextResult;
+      found = true;
     }
   }
 
@@ -87,6 +186,7 @@ export const defaultParams = {
   nonNegative: true,
   allowRemainder: false,
   disallowOne: true,
+  disallowCarryover: false,
 };
 
 export const paramSchema: ParamSchemaItem[] = [
@@ -147,5 +247,11 @@ export const paramSchema: ParamSchemaItem[] = [
     label: "Disallow Quotient 1 (Division)",
     type: "boolean",
     default: defaultParams.disallowOne,
+  },
+  {
+    name: "disallowCarryover",
+    label: "Disallow Carryover (Vertical Add/Sub)",
+    type: "boolean",
+    default: defaultParams.disallowCarryover,
   },
 ];

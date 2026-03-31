@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect, useRef } from "react";
 import { calculateAutoProblemsPerPage } from "../lib/utils";
 import seedrandom from "seedrandom";
 import { WorksheetConfig, Problem } from "../types";
-import { weightedRandom, encodeConfig, generateTitle } from "../lib/utils";
+import { weightedRandomIndex, encodeConfig, generateTitle } from "../lib/utils";
 import ProblemRenderer from "./ProblemRenderer";
 import { Plus, Minus, X, Divide } from "lucide-react";
 import * as fractionModule from "../modules/fraction";
@@ -66,11 +66,49 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
       ? config.layout.pageCount * autoProblemsPerPage 
       : config.count;
 
+    // Track seen problems per problem set to avoid duplicates until exhausted
+    const seenProblems = new Map<number, Set<string>>();
+
     for (let i = 0; i < totalCount; i++) {
-      const selectedSet = weightedRandom(config.problemSets, weights, rng);
+      const setIndex = weightedRandomIndex(weights, rng);
+      const selectedSet = config.problemSets[setIndex];
       const module = PROBLEM_MODULES[selectedSet.type];
+      
       if (module) {
-        generated.push(module.generate(rng, selectedSet.params));
+        if (!seenProblems.has(setIndex)) {
+          seenProblems.set(setIndex, new Set());
+        }
+        const seen = seenProblems.get(setIndex)!;
+
+        let problem: Problem | null = null;
+        let attempts = 0;
+        const MAX_ATTEMPTS = 100;
+
+        while (attempts < MAX_ATTEMPTS) {
+          const candidate = module.generate(rng, selectedSet.params);
+          // Create a unique key based on the problem data
+          // We use JSON.stringify of the data to ensure 1+2 is different from 2+1
+          const problemKey = JSON.stringify(candidate.question.data);
+          
+          if (!seen.has(problemKey)) {
+            seen.add(problemKey);
+            problem = candidate;
+            break;
+          }
+          attempts++;
+        }
+
+        // If we couldn't find a unique problem after MAX_ATTEMPTS, 
+        // it's likely we exhausted permutations for this specific set.
+        // Reset the seen set for this set and pick the next generated one.
+        if (!problem) {
+          seen.clear();
+          problem = module.generate(rng, selectedSet.params);
+          const problemKey = JSON.stringify(problem.question.data);
+          seen.add(problemKey);
+        }
+
+        generated.push(problem);
       }
     }
 

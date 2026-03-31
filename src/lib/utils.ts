@@ -50,15 +50,22 @@ export function generateSeed(): string {
  * Helper to get a random item from an array based on weights.
  */
 export function weightedRandom<T>(items: T[], weights: number[], rng: () => number): T {
+  return items[weightedRandomIndex(weights, rng)];
+}
+
+/**
+ * Helper to get a random index from an array based on weights.
+ */
+export function weightedRandomIndex(weights: number[], rng: () => number): number {
   const totalWeight = weights.reduce((acc, weight) => acc + weight, 0);
   let random = rng() * totalWeight;
-  for (let i = 0; i < items.length; i++) {
+  for (let i = 0; i < weights.length; i++) {
     if (random < weights[i]) {
-      return items[i];
+      return i;
     }
     random -= weights[i];
   }
-  return items[0];
+  return 0;
 }
 
 export function generateTitle(config: WorksheetConfig): string {

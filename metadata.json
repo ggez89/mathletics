@@ -1,5 +1,5 @@
 {
-  "name": "Mathletics - Worksheet Generation",
+  "name": "Mathletics - Worksheet Generator",
   "description": "A modern React application for generating printable, deterministic math worksheets with seeded randomness and modular problem sets.",
   "requestFramePermissions": []
 }

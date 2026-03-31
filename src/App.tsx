@@ -10,7 +10,7 @@ const DEFAULT_CONFIG: WorksheetConfig = {
   seed: generateSeed(),
   layout: {
     problemsPerRow: 2,
-    fontSize: 16,
+    fontSize: 20,
     spacing: 20,
     title: "", // Empty for auto-generation
     showAnswers: false,

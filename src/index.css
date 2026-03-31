@@ -54,3 +54,12 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+@keyframes flash-red {
+  0% { border-color: rgb(220, 38, 38); background-color: rgba(220, 38, 38, 0.1); transform: scale(1.02); }
+  100% { border-color: rgb(209, 213, 219); background-color: white; transform: scale(1); }
+}
+
+.animate-flash-red {
+  animation: flash-red 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}

@@ -22,6 +22,88 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
   const [base64Input, setBase64Input] = useState("");
   const [error, setError] = useState("");
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+  const [flashingFields, setFlashingFields] = useState<{ [key: string]: boolean }>({});
+
+  const triggerFlash = (setIndex: number, paramName: string) => {
+    const key = `${setIndex}-${paramName}`;
+    setFlashingFields(prev => ({ ...prev, [key]: true }));
+    setTimeout(() => {
+      setFlashingFields(prev => ({ ...prev, [key]: false }));
+    }, 800);
+  };
+
+  const syncParams = (setIndex: number, paramName: string, value: any, currentParams: any) => {
+    const p = { ...currentParams, [paramName]: value };
+    const type = config.problemSets[setIndex].type;
+
+    // Helper to ensure min <= max
+    const ensureMinMax = (minKey: string, maxKey: string) => {
+      p[minKey] = Number(p[minKey]) || 0;
+      p[maxKey] = Number(p[maxKey]) || 0;
+      if (p[minKey] > p[maxKey]) {
+        if (paramName === minKey) {
+          p[maxKey] = p[minKey];
+          triggerFlash(setIndex, maxKey);
+        } else {
+          p[minKey] = p[maxKey];
+          triggerFlash(setIndex, minKey);
+        }
+      }
+    };
+
+    if (type === "arithmetic") {
+      p.minVal = Number(p.minVal) || 0;
+      p.maxVal = Number(p.maxVal) || 0;
+      p.maxAnswer = Number(p.maxAnswer) || 0;
+
+      const op = p.operation;
+
+      if (paramName === "minVal" || paramName === "maxVal" || paramName === "operation") {
+        if (op === "+") {
+          if (p.minVal * 2 > p.maxAnswer) {
+            p.minVal = Math.floor(p.maxAnswer / 2);
+            triggerFlash(setIndex, "minVal");
+          }
+        } else if (op === "×") {
+          if (p.minVal * p.minVal > p.maxAnswer) {
+            p.minVal = Math.floor(Math.sqrt(p.maxAnswer));
+            triggerFlash(setIndex, "minVal");
+          }
+        }
+        ensureMinMax("minVal", "maxVal");
+      } else if (paramName === "maxAnswer") {
+        if (op === "+") {
+          if (p.minVal * 2 > p.maxAnswer) {
+            p.minVal = Math.floor(p.maxAnswer / 2);
+            triggerFlash(setIndex, "minVal");
+          }
+        } else if (op === "×") {
+          if (p.minVal * p.minVal > p.maxAnswer) {
+            p.minVal = Math.floor(Math.sqrt(p.maxAnswer));
+            triggerFlash(setIndex, "minVal");
+          }
+        }
+        if (p.minVal > p.maxVal) {
+          p.maxVal = p.minVal;
+          triggerFlash(setIndex, "maxVal");
+        }
+      }
+    } else if (type === "fraction") {
+      if (paramName === "minNumerator" || paramName === "maxNumerator") {
+        ensureMinMax("minNumerator", "maxNumerator");
+      } else if (paramName === "minDenominator" || paramName === "maxDenominator") {
+        ensureMinMax("minDenominator", "maxDenominator");
+      }
+    } else if (type === "longDivision") {
+      if (paramName === "minDividend" || paramName === "maxDividend") {
+        ensureMinMax("minDividend", "maxDividend");
+      } else if (paramName === "minDivisor" || paramName === "maxDivisor") {
+        ensureMinMax("minDivisor", "maxDivisor");
+      }
+    }
+
+    return p;
+  };
 
   const updateLayout = (key: keyof WorksheetConfig["layout"], value: any) => {
     onChange({
@@ -62,7 +144,9 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
 
   const updateParams = (setIndex: number, paramName: string, value: any) => {
     const newSets = [...config.problemSets];
-    newSets[setIndex].params = { ...newSets[setIndex].params, [paramName]: value };
+    const currentParams = newSets[setIndex].params;
+    const syncedParams = syncParams(setIndex, paramName, value, currentParams);
+    newSets[setIndex].params = syncedParams;
     onChange({ ...config, problemSets: newSets });
   };
 
@@ -226,7 +310,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
           <div className="grid grid-cols-2 gap-4">
             {config.layout.paginationMode === "count" ? (
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-gray-600">Maximum Problems Per Page</label>
+                <label className="text-xs font-semibold text-gray-600">Max Problems Per Page</label>
                 <input
                   type="number"
                   value={config.layout.problemsPerPage ?? 20}
@@ -242,7 +326,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
               </div>
             ) : (
               <div className="space-y-1 opacity-50">
-                <label className="text-xs font-semibold text-gray-600">Maximum Problems Per Page</label>
+                <label className="text-xs font-semibold text-gray-600">Max Problems Per Page</label>
                 <div className="px-3 py-2 bg-gray-100 border border-gray-200 rounded-md text-xs italic">
                   Auto-calculated
                 </div>
@@ -350,45 +434,58 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                 </div>
 
                 <div className="grid grid-cols-2 gap-x-3 gap-y-2">
-                  {PROBLEM_MODULES[set.type]?.paramSchema.map((param: ParamSchemaItem) => (
-                    <div key={param.name} className={`space-y-1 ${param.type === "boolean" ? "flex items-center gap-2 pt-4" : ""} ${param.fullWidth ? "col-span-2" : ""}`}>
-                      <label className="text-[10px] font-bold text-gray-500 uppercase">{param.label}</label>
-                      {param.type === "select" ? (
-                        <select
-                          value={set.params[param.name] ?? param.default}
-                          onChange={(e) => updateParams(setIndex, param.name, e.target.value)}
-                          className="w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs"
-                        >
-                          {param.options?.map((opt) => (
-                            <option key={opt.value} value={opt.value}>
-                              {opt.label}
-                            </option>
-                          ))}
-                        </select>
-                      ) : param.type === "boolean" ? (
-                        <input
-                          type="checkbox"
-                          checked={set.params[param.name] ?? param.default}
-                          onChange={(e) => updateParams(setIndex, param.name, e.target.checked)}
-                          className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
-                        />
-                      ) : (
-                        <input
-                          type={param.type}
-                          value={set.params[param.name] ?? ""}
-                          onChange={(e) =>
-                            updateParams(
-                              setIndex,
-                              param.name,
-                              param.type === "number" ? parseFloat(e.target.value) : e.target.value
-                            )
-                          }
-                          onFocus={(e) => e.target.select()}
-                          className="w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs"
-                        />
-                      )}
-                    </div>
-                  ))}
+                  {PROBLEM_MODULES[set.type]?.paramSchema
+                    .filter((param: ParamSchemaItem) => {
+                      if (param.name === "disallowCarryover") {
+                        return set.type === "arithmetic" && 
+                               set.params.format === "vertical" && 
+                               (set.params.operation === "+" || set.params.operation === "−" || set.params.operation === "-");
+                      }
+                      // Also hide division specific params if not division
+                      if (param.name === "allowRemainder" || param.name === "disallowOne") {
+                        return set.params.operation === "÷";
+                      }
+                      return true;
+                    })
+                    .map((param: ParamSchemaItem) => (
+                      <div key={param.name} className={`space-y-1 ${param.type === "boolean" ? "flex items-center gap-2 pt-4" : ""} ${param.fullWidth ? "col-span-2" : ""}`}>
+                        <label className="text-[10px] font-bold text-gray-500 uppercase">{param.label}</label>
+                        {param.type === "select" ? (
+                          <select
+                            value={set.params[param.name] ?? param.default}
+                            onChange={(e) => updateParams(setIndex, param.name, e.target.value)}
+                            className={`w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs transition-all ${flashingFields[`${setIndex}-${param.name}`] ? "animate-flash-red" : ""}`}
+                          >
+                            {param.options?.map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </select>
+                        ) : param.type === "boolean" ? (
+                          <input
+                            type="checkbox"
+                            checked={set.params[param.name] ?? param.default}
+                            onChange={(e) => updateParams(setIndex, param.name, e.target.checked)}
+                            className={`w-4 h-4 rounded border-gray-300 text-black focus:ring-black transition-all ${flashingFields[`${setIndex}-${param.name}`] ? "animate-flash-red" : ""}`}
+                          />
+                        ) : (
+                          <input
+                            type={param.type}
+                            value={set.params[param.name] ?? ""}
+                            onChange={(e) =>
+                              updateParams(
+                                setIndex,
+                                param.name,
+                                param.type === "number" ? parseFloat(e.target.value) : e.target.value
+                              )
+                            }
+                            onFocus={(e) => e.target.select()}
+                            className={`w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs transition-all ${flashingFields[`${setIndex}-${param.name}`] ? "animate-flash-red" : ""}`}
+                          />
+                        )}
+                      </div>
+                    ))}
                 </div>
               </div>
             ))}
