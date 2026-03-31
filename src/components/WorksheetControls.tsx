@@ -645,7 +645,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
 
       <footer className="p-3 md:p-6 border-t border-gray-200 bg-white">
         <p className="text-[9px] md:text-[10px] text-gray-400 text-center leading-relaxed">
-          Made with love for my family by Patrick Young.<br />
+          Made with love for my family by <a href="https://github.com/ggez89/mathletics" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors underline underline-offset-2">Patrick Young</a><br />
           © 2026 Patrick Young. All rights reserved.
         </p>
       </footer>
