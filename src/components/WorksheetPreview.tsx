@@ -8,11 +8,13 @@ import { Plus, Minus, X, Divide } from "lucide-react";
 import * as fractionModule from "../modules/fraction";
 import * as longDivisionModule from "../modules/longDivision";
 import * as arithmeticModule from "../modules/arithmetic";
+import * as timeModule from "../modules/time";
 
 const PROBLEM_MODULES: { [key: string]: any } = {
   fraction: fractionModule,
   longDivision: longDivisionModule,
   arithmetic: arithmeticModule,
+  time: timeModule,
 };
 
 interface WorksheetPreviewProps {
@@ -119,6 +121,33 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
     return config.layout.title || generateTitle(config);
   }, [config.layout.title, config.problemSets, config.count]);
 
+  const [titleScale, setTitleScale] = useState(1);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const titleParentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const adjustTitleSize = () => {
+      if (titleRef.current && titleParentRef.current) {
+        const parentWidth = titleParentRef.current.offsetWidth;
+        const titleWidth = titleRef.current.scrollWidth;
+        
+        if (titleWidth > parentWidth && parentWidth > 0) {
+          setTitleScale(parentWidth / titleWidth);
+        } else {
+          setTitleScale(1);
+        }
+      }
+    };
+
+    // Small delay to ensure layout is stable
+    const timer = setTimeout(adjustTitleSize, 50);
+    window.addEventListener("resize", adjustTitleSize);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", adjustTitleSize);
+    };
+  }, [displayTitle, scale]); // Re-run when title or page scale changes
+
   const base64Key = useMemo(() => encodeConfig(config), [config]);
 
   const gridStyle = {
@@ -155,11 +184,11 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
           }}
         >
           <div 
-            className="w-[8.5in] min-h-[11in] bg-white shadow-2xl px-8 pt-8 pb-12 flex flex-col print:shadow-none print:w-[8.5in] print:h-[11in] print:min-h-[11in] print:px-8 print:pt-8 print:pb-12 print:border-0 print:break-after-page print:mx-auto"
+            className="w-[8.5in] h-[11in] max-h-[11in] bg-white shadow-2xl px-8 pt-8 pb-8 flex flex-col overflow-hidden print:shadow-none print:w-[8.5in] print:h-[11in] print:min-h-[11in] print:px-8 print:pt-8 print:pb-8 print:border-0 print:break-after-page print:mx-auto"
           >
-            <header className="mb-8 space-y-4">
+            <header className="mb-6 space-y-4">
             <div className="flex justify-between items-end border-b-4 border-black pb-4">
-              <div className="flex-1 min-w-0 pr-12">
+              <div className="flex-1 min-w-0 pr-24">
                 <div className="flex items-center gap-4">
                   <div className="grid grid-cols-2 gap-0.5 p-1 bg-white border-2 border-black rounded shadow-sm shrink-0">
                     <Plus size={16} strokeWidth={3} className="text-black" />
@@ -167,9 +196,18 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
                     <X size={16} strokeWidth={3} className="text-black" />
                     <Divide size={16} strokeWidth={3} className="text-black" />
                   </div>
-                  <h1 className="text-4xl font-black uppercase tracking-tighter leading-none break-words">
-                    {displayTitle}
-                  </h1>
+                  <div ref={titleParentRef} className="flex-1 min-w-0 overflow-hidden">
+                    <h1 
+                      ref={titleRef}
+                      className="text-4xl font-black uppercase tracking-tighter leading-none whitespace-nowrap origin-left"
+                      style={{ 
+                        transform: `scale(${titleScale})`,
+                        width: 'max-content'
+                      }}
+                    >
+                      {displayTitle}
+                    </h1>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3 mt-3 h-5 ml-[68px]">
                   {showAnswers && (
@@ -199,7 +237,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
             </div>
           </header>
 
-          <main className="flex-1" style={gridStyle}>
+          <main className="flex-1 pb-4" style={gridStyle}>
             {pageProblems.map((problem, index) => (
               <div key={problem.id} className="break-inside-avoid">
                 <ProblemRenderer

@@ -5,11 +5,13 @@ import { Plus, Trash2, RefreshCw, Printer, Key, Save, FolderOpen, Wand2, Chevron
 import * as fractionModule from "../modules/fraction";
 import * as longDivisionModule from "../modules/longDivision";
 import * as arithmeticModule from "../modules/arithmetic";
+import * as timeModule from "../modules/time";
 
 const PROBLEM_MODULES: { [key: string]: any } = {
   fraction: fractionModule,
   longDivision: longDivisionModule,
   arithmetic: arithmeticModule,
+  time: timeModule,
 };
 
 interface WorksheetControlsProps {
@@ -230,7 +232,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
 
         <section className="space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">Global Settings</h2>
+            <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">Page Settings</h2>
             <button
               onClick={handleNewSeed}
               className="flex items-center gap-1 px-3 py-1 bg-white border border-gray-300 text-gray-700 text-xs font-bold rounded-md hover:bg-gray-100 transition-colors"
@@ -337,10 +339,11 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
               <input
                 type="number"
                 value={config.layout.problemsPerRow ?? 1}
-                max={config.problemSets.some(s => s.type === "fraction") ? 2 : 3}
+                max={config.problemSets.some(s => s.type === "fraction" || s.type === "time") ? 2 : 3}
                 onChange={(e) => {
                   const hasFractions = config.problemSets.some(s => s.type === "fraction");
-                  const maxPerRow = hasFractions ? 2 : 3;
+                  const hasTime = config.problemSets.some(s => s.type === "time");
+                  const maxPerRow = hasFractions || hasTime ? 2 : 3;
                   const newPerRow = Math.min(maxPerRow, Math.max(1, parseInt(e.target.value) || 1));
                   
                   // Recalculate max per page based on new per row
@@ -414,6 +417,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                     <option value="arithmetic">Basic Arithmetic</option>
                     <option value="fraction">Fractions</option>
                     <option value="longDivision">Long Division</option>
+                    <option value="time">Time Telling</option>
                   </select>
                   <div className="flex items-center gap-2">
                     <label className="text-[10px] font-bold text-gray-400 uppercase">Weight</label>
@@ -444,6 +448,9 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                       // Also hide division specific params if not division
                       if (param.name === "allowRemainder" || param.name === "disallowOne") {
                         return set.params.operation === "÷";
+                      }
+                      if (param.name === "useScenarios") {
+                        return set.type === "time" && set.params.mode === "draw";
                       }
                       return true;
                     })

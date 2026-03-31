@@ -28,7 +28,7 @@ export default function LongDivisionRenderer({ data, showAnswer, answer }: { dat
           </svg>
           <div className="relative z-10 pl-4 flex flex-col items-end">
             {showAnswer && (
-              <div className="absolute -top-6 right-0 text-red-600 font-bold z-20 whitespace-nowrap">
+              <div className="absolute -top-8 right-0 text-red-600 font-bold z-20 whitespace-nowrap">
                 {answer}
               </div>
             )}

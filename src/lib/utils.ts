@@ -75,6 +75,7 @@ export function generateTitle(config: WorksheetConfig): string {
     if (t === "arithmetic") return "Arithmetic";
     if (t === "fraction") return "Fraction Operations";
     if (t === "longDivision") return "Division";
+    if (t === "time") return "Time Telling";
     return t;
   });
 
@@ -84,7 +85,9 @@ export function generateTitle(config: WorksheetConfig): string {
     if (set.type === "arithmetic") {
       title = `${set.params.operation === "+" ? "Addition" : set.params.operation === "-" ? "Subtraction" : set.params.operation === "*" ? "Multiplication" : "Division"} Practice`;
     } else if (set.type === "longDivision") {
-      title = "Long Division Practice";
+      title = "Long Division";
+    } else if (set.type === "time") {
+      title = "Time Telling";
     } else if (set.type === "fraction") {
       const op = set.params.operation;
       const opLabel = op === "+" ? "Addition" : op === "-" ? "Subtraction" : op === "×" ? "Multiplication" : op === "÷" ? "Division" : "Operations";
@@ -99,17 +102,21 @@ export function generateTitle(config: WorksheetConfig): string {
  * Calculates the maximum number of problems that can fit on a page based on layout settings.
  */
 export function calculateAutoProblemsPerPage(config: WorksheetConfig): number {
-  // Heuristic: 11in page = 1056px. Subtract margins (64px), header (~150px), footer (~120px)
-  const availableHeight = 1056 - 64 - 150 - 120;
+  // Heuristic: 11in page = 1056px. 
+  // Subtract margins (64px), header (~180px), footer (~120px)
+  const availableHeight = 1056 - 64 - 180 - 120;
   
   let maxProblemHeight = 0;
   
   config.problemSets.forEach(s => {
-    const format = s.params?.format || (s.type === "fraction" ? "fraction" : s.type === "longDivision" ? "longDivision" : "inline");
+    const format = s.params?.format || (s.type === "fraction" ? "fraction" : s.type === "longDivision" ? "longDivision" : s.type === "time" ? "time" : "inline");
     let h = 0;
     switch (format) {
       case "longDivision":
-        h = 80;
+        h = 130;
+        break;
+      case "time":
+        h = 190; // Reduced further to ensure 3 rows (6 clocks) fit on a page
         break;
       case "vertical":
         h = config.layout.fontSize * 3 + 40;
@@ -127,6 +134,9 @@ export function calculateAutoProblemsPerPage(config: WorksheetConfig): number {
 
   // Add renderer padding (py-2 = 16px total) and spacing
   const estimatedProblemHeight = maxProblemHeight + config.layout.spacing + 16;
+  const hasFractions = config.problemSets.some(s => s.type === "fraction");
+  const hasTime = config.problemSets.some(s => s.type === "time");
+  const maxPerRow = hasFractions || hasTime ? 2 : 3;
   const rows = Math.max(1, Math.floor(availableHeight / estimatedProblemHeight));
   const calculatedPerPage = rows * config.layout.problemsPerRow;
   

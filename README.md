@@ -10,18 +10,22 @@ A professional, highly customizable math worksheet generator designed for educat
   - **Basic Arithmetic**: Addition, Subtraction, Multiplication (×), and Division (÷).
   - **Long Division**: Customizable dividend and divisor ranges with remainder toggles.
   - **Fractions**: Addition, Subtraction, Multiplication, and Division with optional unreduced answer forms and "Like Denominators" mode.
+  - **Time Telling**: Analog clock practice with **Identify** (read the clock) and **Draw** (draw the hands) modes. Includes "Scenarios" (e.g., "I wake up at...") for real-world context.
 - **Advanced Customization**:
-  - Set minimum and maximum values for operands.
+  - Set minimum and maximum values for operands, numerators, and denominators.
   - Enforce "Max Answer" limits across all operations.
-  - Toggle "Allow Remainders" for division with proper `Quotient R Remainder` formatting.
+  - Toggle "Allow Remainders" for division with standard "Quotient R Remainder" notation.
   - "Disallow Quotient 1" option to ensure meaningful practice.
-- **Professional Layout**:
-  - Choose between **Inline**, **Vertical**, **Fraction**, and **Long Division** problem formats.
-  - Adjust font size, spacing, and problems per row.
-  - Automatic descriptive title generation (e.g., "Fraction Addition," "Long Division Practice").
+  - **Clock Customization**: Toggle minute ticks and choose between "All Numbers" or "Major Numbers" (12, 3, 6, 9) on clock faces.
+- **Professional Layout & Pagination**:
+  - **Strict 8.5" x 11" Rendering**: Worksheets are rendered in a fixed-height container to ensure perfect print alignment.
+  - **Smart Pagination**: Automatically calculates how many problems fit per page based on problem type and font size.
+  - **Page Numbering**: Includes "Page X of Y" in the footer for multi-page worksheets.
+  - **Smart Header**: Titles automatically shrink their font size to stay on a single line, ensuring a consistent header layout.
 - **Modern Web Features**:
   - **Mobile Optimized**: "Shrink-to-fit" responsive scaling ensures worksheets are perfectly visible on any device.
   - **Base64 Config Sharing**: Encode your entire worksheet configuration into a URL-safe key for easy sharing and reproducibility.
+  - **Seed-Based Generation**: Every worksheet includes a unique "Seed" for predictable random generation.
   - **Presets**: Save and load your favorite configurations directly to/from your browser's local storage.
 - **Print & Save**:
   - **Print Ready**: Optimized CSS for clean, professional printing on standard 8.5" x 11" paper.

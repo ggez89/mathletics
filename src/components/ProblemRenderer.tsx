@@ -4,6 +4,7 @@ import FractionRenderer from "./renderers/FractionRenderer";
 import LongDivisionRenderer from "./renderers/LongDivisionRenderer";
 import VerticalRenderer from "./renderers/VerticalRenderer";
 import InlineRenderer from "./renderers/InlineRenderer";
+import TimeRenderer from "./renderers/TimeRenderer";
 
 interface ProblemRendererProps {
   problem: Problem;
@@ -23,6 +24,8 @@ export const ProblemRenderer: React.FC<ProblemRendererProps> = ({ problem, showA
         return <LongDivisionRenderer data={data} showAnswer={showAnswers} answer={display} />;
       case "vertical":
         return <VerticalRenderer data={data} showAnswer={showAnswers} answer={display} />;
+      case "time":
+        return <TimeRenderer data={data} showAnswer={showAnswers} answer={display} />;
       case "inline":
       default:
         return <InlineRenderer data={data} showAnswer={showAnswers} answer={display} />;
