@@ -252,11 +252,12 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
           <footer className="mt-auto pt-8 flex justify-between items-end text-[9px] text-gray-400 font-mono">
             <div className="flex-1">
               {config.layout.showConfigKey && (
-                <div className="max-w-[80%] break-all">
+                <div className="max-w-[80%] break-all mb-2">
                   <span className="font-bold uppercase text-gray-300 block mb-1">Config Key:</span>
                   {base64Key}
                 </div>
               )}
+              <div className="text-gray-400 text-[11px]">https://ggez89.github.io/mathletics/</div>
             </div>
             <div className="text-right whitespace-nowrap">
               {pages.length > 1 && (
