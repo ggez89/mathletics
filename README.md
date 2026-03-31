@@ -41,11 +41,12 @@ A professional, highly customizable math worksheet generator designed for educat
 
 ## Tech Stack
 
-- **React**: Modern functional components and hooks.
-- **Tailwind CSS**: Utility-first styling for a clean, responsive interface.
-- **Lucide React**: Beautiful, consistent iconography.
-- **UUID**: Unique identification for problem tracking.
-- **Seedrandom**: Predictable random number generation.
+- **[React](https://react.dev/)**: Modern functional components and hooks.
+- **[Tailwind CSS](https://tailwindcss.com/)**: Utility-first styling for a clean, responsive interface.
+- **[Lucide React](https://lucide.dev/)**: Beautiful, consistent iconography.
+- **[UUID](https://www.npmjs.com/package/uuid)**: Unique identification for problem tracking.
+- **[Seedrandom](https://www.npmjs.com/package/seedrandom)**: Predictable random number generation.
+- **[Google AI Studio](https://aistudio.google.com/)**: Used to build, iterate, and deploy this application through natural language prompting.
 
 ---
 *Made with love for my family by Patrick Young.*
