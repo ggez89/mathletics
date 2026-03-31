@@ -135,8 +135,7 @@ export function calculateAutoProblemsPerPage(config: WorksheetConfig): number {
   // Add renderer padding (py-2 = 16px total) and spacing
   const estimatedProblemHeight = maxProblemHeight + config.layout.spacing + 16;
   const hasFractions = config.problemSets.some(s => s.type === "fraction");
-  const hasTime = config.problemSets.some(s => s.type === "time");
-  const maxPerRow = hasFractions || hasTime ? 2 : 3;
+  const maxPerRow = hasFractions ? 2 : 3;
   const rows = Math.max(1, Math.floor(availableHeight / estimatedProblemHeight));
   const calculatedPerPage = rows * config.layout.problemsPerRow;
   

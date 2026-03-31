@@ -193,6 +193,7 @@ export const paramSchema: ParamSchemaItem[] = [
   {
     name: "operation",
     label: "Operation",
+    help: "Choose the mathematical operation for this problem set.",
     type: "select",
     default: defaultParams.operation,
     options: [
@@ -204,25 +205,29 @@ export const paramSchema: ParamSchemaItem[] = [
   },
   {
     name: "maxAnswer",
-    label: "Max Answer (absolute)",
+    label: "Max Answer",
+    help: "The maximum allowed absolute value for the answer (e.g., if set to 20, answers will be between -20 and 20).",
     type: "number",
     default: defaultParams.maxAnswer,
   },
   {
     name: "minVal",
     label: "Min Value",
+    help: "The minimum value for any single number in the problem.",
     type: "number",
     default: defaultParams.minVal,
   },
   {
     name: "maxVal",
     label: "Max Value",
+    help: "The maximum value for any single number in the problem.",
     type: "number",
     default: defaultParams.maxVal,
   },
   {
     name: "format",
     label: "Format",
+    help: "Choose how the problem is displayed on the worksheet.",
     type: "select",
     default: defaultParams.format,
     options: [
@@ -232,25 +237,29 @@ export const paramSchema: ParamSchemaItem[] = [
   },
   {
     name: "nonNegative",
-    label: "Non-negative results only",
+    label: "No Negatives",
+    help: "Ensures subtraction results are never less than zero.",
     type: "boolean",
     default: defaultParams.nonNegative,
   },
   {
     name: "allowRemainder",
-    label: "Allow remainders (Division)",
+    label: "Allow Remainders",
+    help: "If enabled, division problems can have remainders (e.g., 7 ÷ 2 = 3 R 1).",
     type: "boolean",
     default: defaultParams.allowRemainder,
   },
   {
     name: "disallowOne",
-    label: "Disallow Quotient 1 (Division)",
+    label: "No Quotient 1",
+    help: "Prevents simple division problems where the answer is 1 (e.g., 5 ÷ 5).",
     type: "boolean",
     default: defaultParams.disallowOne,
   },
   {
     name: "disallowCarryover",
-    label: "Disallow Carryover (Vertical Add/Sub)",
+    label: "No Carryover",
+    help: "Ensures addition/subtraction doesn't require carrying or borrowing digits.",
     type: "boolean",
     default: defaultParams.disallowCarryover,
   },

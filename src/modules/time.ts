@@ -16,7 +16,7 @@ const SCENARIOS = [
 
 export function generate(rng: () => number, params: any = {}): Problem {
   const mode = params.mode ?? "identify";
-  const difficulty = params.difficulty ?? "half-hour";
+  const precision = params.precision ?? "hour";
   const useScenarios = params.useScenarios ?? false;
   const numberStyle = params.numberStyle ?? "all";
   const showTicks = params.showTicks ?? true;
@@ -24,7 +24,7 @@ export function generate(rng: () => number, params: any = {}): Problem {
   let h = randInt(rng, 1, 12);
   let m = 0;
 
-  switch (difficulty) {
+  switch (precision) {
     case "hour":
       m = 0;
       break;
@@ -79,7 +79,7 @@ export function generate(rng: () => number, params: any = {}): Problem {
 
 export const defaultParams = {
   mode: "identify",
-  difficulty: "half-hour",
+  precision: "hour",
   useScenarios: false,
   numberStyle: "all",
   showTicks: true,
@@ -89,6 +89,7 @@ export const paramSchema: ParamSchemaItem[] = [
   {
     name: "mode",
     label: "Mode",
+    help: "Choose whether to identify the time on a clock or draw the hands for a given time.",
     type: "select",
     default: defaultParams.mode,
     options: [
@@ -97,10 +98,11 @@ export const paramSchema: ParamSchemaItem[] = [
     ],
   },
   {
-    name: "difficulty",
-    label: "Difficulty",
+    name: "precision",
+    label: "Precision",
+    help: "Set the precision of the time intervals (e.g., every 5 minutes or every minute).",
     type: "select",
-    default: defaultParams.difficulty,
+    default: defaultParams.precision,
     options: [
       { label: "On the Hour", value: "hour" },
       { label: "Half Hour", value: "half-hour" },
@@ -112,12 +114,14 @@ export const paramSchema: ParamSchemaItem[] = [
   {
     name: "useScenarios",
     label: "Use Scenarios",
+    help: "If enabled, problems will include real-world scenarios like 'I wake up at...'.",
     type: "boolean",
     default: defaultParams.useScenarios,
   },
   {
     name: "numberStyle",
     label: "Numbers on Face",
+    help: "Choose which numbers are displayed on the clock face.",
     type: "select",
     default: defaultParams.numberStyle,
     options: [
@@ -129,6 +133,7 @@ export const paramSchema: ParamSchemaItem[] = [
   {
     name: "showTicks",
     label: "Show Minute Ticks",
+    help: "Toggle the display of small minute markers around the clock face.",
     type: "boolean",
     default: defaultParams.showTicks,
   },

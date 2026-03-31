@@ -26,6 +26,7 @@ export interface ProblemModule {
 export interface ParamSchemaItem {
   name: string;
   label: string;
+  help?: string;
   type: "number" | "text" | "select" | "boolean";
   default: any;
   options?: { label: string; value: any }[];

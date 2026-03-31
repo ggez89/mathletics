@@ -23,6 +23,7 @@ A professional, highly customizable math worksheet generator designed for educat
   - **Page Numbering**: Includes "Page X of Y" in the footer for multi-page worksheets.
   - **Smart Header**: Titles automatically shrink their font size to stay on a single line, ensuring a consistent header layout.
 - **Modern Web Features**:
+  - **Help Tooltips**: Brief help descriptions for all features and settings, accessible via hover on desktop and click on mobile.
   - **Mobile Optimized**: "Shrink-to-fit" responsive scaling ensures worksheets are perfectly visible on any device.
   - **Base64 Config Sharing**: Encode your entire worksheet configuration into a URL-safe key for easy sharing and reproducibility.
   - **Seed-Based Generation**: Every worksheet includes a unique "Seed" for predictable random generation.
@@ -34,10 +35,11 @@ A professional, highly customizable math worksheet generator designed for educat
 
 ## Getting Started
 
-1. Select a problem type from the sidebar.
-2. Adjust the parameters (ranges, operations, layout) to fit your needs.
-3. Preview the worksheet in real-time on the right.
-4. Click **Print Worksheet** to send to your printer or select "Save as PDF" in the print destination.
+0. **[Open the Web App](https://ggez89.github.io/mathletics/)**.
+1. **Adjust Page Settings**: Set your worksheet title, font size, and layout preferences.
+2. **Select Problem Type**: Choose a module from the sidebar (Arithmetic, Long Division, Fractions, or Time Telling).
+3. **Adjust Parameters**: Fine-tune ranges, operations, and specific problem settings.
+4. **Print Worksheet**: Click **Print Worksheet** to send to your printer or select "Save as PDF" in the print destination.
 
 ## Tech Stack
 

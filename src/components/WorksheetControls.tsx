@@ -6,6 +6,7 @@ import * as fractionModule from "../modules/fraction";
 import * as longDivisionModule from "../modules/longDivision";
 import * as arithmeticModule from "../modules/arithmetic";
 import * as timeModule from "../modules/time";
+import HelpTooltip from "./HelpTooltip";
 
 const PROBLEM_MODULES: { [key: string]: any } = {
   fraction: fractionModule,
@@ -137,11 +138,17 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
   const updateProblemSet = (index: number, updates: Partial<ProblemDefinition>) => {
     const newSets = [...config.problemSets];
     newSets[index] = { ...newSets[index], ...updates };
+    let newLayout = { ...config.layout };
     // If type changed, reset params
     if (updates.type) {
       newSets[index].params = { ...PROBLEM_MODULES[updates.type].defaultParams };
+      if (updates.type === "time") {
+        newLayout.problemsPerRow = 3;
+      } else if (updates.type === "fraction") {
+        newLayout.problemsPerRow = 2;
+      }
     }
-    onChange({ ...config, problemSets: newSets });
+    onChange({ ...config, problemSets: newSets, layout: newLayout });
   };
 
   const updateParams = (setIndex: number, paramName: string, value: any) => {
@@ -243,7 +250,10 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
           </div>
           
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-gray-600">Worksheet Title</label>
+            <div className="flex items-center justify-between gap-1">
+              <label className="text-xs font-semibold text-gray-600">Worksheet Title</label>
+              <HelpTooltip content="The main heading displayed at the top of the worksheet." align="right" />
+            </div>
             <div className="flex gap-2">
               <input
                 type="text"
@@ -264,20 +274,26 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-600">Pagination Mode</label>
+              <div className="flex items-center justify-between gap-1">
+                <label className="text-xs font-semibold text-gray-600">Pagination Mode</label>
+                <HelpTooltip content="Choose between a fixed number of problems or a fixed number of pages." align="right" />
+              </div>
               <select
                 value={config.layout.paginationMode}
                 onChange={(e) => updateLayout("paginationMode", e.target.value)}
                 className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm"
               >
-                <option value="count">Fixed Problem Count</option>
                 <option value="pages">Fixed Page Count</option>
+                <option value="count">Fixed Problem Count</option>
               </select>
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-600">
-                {config.layout.paginationMode === "pages" ? "Number of Pages" : "Total Problems"}
-              </label>
+              <div className="flex items-center justify-between gap-1">
+                <label className="text-xs font-semibold text-gray-600">
+                  {config.layout.paginationMode === "pages" ? "Number of Pages" : "Total Problems"}
+                </label>
+                <HelpTooltip content={config.layout.paginationMode === "pages" ? "The total number of pages to generate." : "The total number of problems to generate across all pages."} align="right" />
+              </div>
               {config.layout.paginationMode === "pages" ? (
                 <input
                   type="number"
@@ -312,7 +328,10 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
           <div className="grid grid-cols-2 gap-4">
             {config.layout.paginationMode === "count" ? (
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-gray-600">Max Problems Per Page</label>
+                <div className="flex items-center justify-between gap-1">
+                  <label className="text-xs font-semibold text-gray-600">Max Problems Per Page</label>
+                  <HelpTooltip content="The maximum number of problems to display on a single page." align="right" />
+                </div>
                 <input
                   type="number"
                   value={config.layout.problemsPerPage ?? 20}
@@ -335,15 +354,17 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
               </div>
             )}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-600">Problems Per Row</label>
+              <div className="flex items-center justify-between gap-1">
+                <label className="text-xs font-semibold text-gray-600">Problems Per Row</label>
+                <HelpTooltip content="The number of problems to display horizontally in each row." align="right" />
+              </div>
               <input
                 type="number"
                 value={config.layout.problemsPerRow ?? 1}
-                max={config.problemSets.some(s => s.type === "fraction" || s.type === "time") ? 2 : 3}
+                max={config.problemSets.some(s => s.type === "fraction") ? 2 : 3}
                 onChange={(e) => {
                   const hasFractions = config.problemSets.some(s => s.type === "fraction");
-                  const hasTime = config.problemSets.some(s => s.type === "time");
-                  const maxPerRow = hasFractions || hasTime ? 2 : 3;
+                  const maxPerRow = hasFractions ? 2 : 3;
                   const newPerRow = Math.min(maxPerRow, Math.max(1, parseInt(e.target.value) || 1));
                   
                   // Recalculate max per page based on new per row
@@ -368,7 +389,10 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
 
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-600">Font Size (px)</label>
+              <div className="flex items-center justify-between gap-1">
+                <label className="text-xs font-semibold text-gray-600">Font Size (px)</label>
+                <HelpTooltip content="The size of the text for the problems and answers." align="right" />
+              </div>
               <div className="flex gap-2">
                 <input
                   type="number"
@@ -412,7 +436,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                   <select
                     value={set.type}
                     onChange={(e) => updateProblemSet(setIndex, { type: e.target.value })}
-                    className="flex-1 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-sm font-semibold"
+                    className="flex-1 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-sm font-medium"
                   >
                     <option value="arithmetic">Basic Arithmetic</option>
                     <option value="fraction">Fractions</option>
@@ -420,7 +444,10 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                     <option value="time">Time Telling</option>
                   </select>
                   <div className="flex items-center gap-2">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Weight</label>
+                    <div className="flex items-center gap-1">
+                      <label className="text-[10px] font-bold text-gray-400 uppercase">Weight</label>
+                      <HelpTooltip content="The relative frequency of this problem set compared to others." align="right" />
+                    </div>
                     <input
                       type="number"
                       value={set.weight ?? 1}
@@ -454,9 +481,14 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                       }
                       return true;
                     })
-                    .map((param: ParamSchemaItem) => (
-                      <div key={param.name} className={`space-y-1 ${param.type === "boolean" ? "flex items-center gap-2 pt-4" : ""} ${param.fullWidth ? "col-span-2" : ""}`}>
-                        <label className="text-[10px] font-bold text-gray-500 uppercase">{param.label}</label>
+                    .map((param: ParamSchemaItem, paramIndex: number) => (
+                      <div key={param.name} className={`space-y-1 ${param.type === "boolean" ? "flex items-start justify-between gap-2 pt-4" : ""} ${param.fullWidth ? "col-span-2" : ""} min-w-0`}>
+                        <div className={`flex items-center gap-1 min-w-0 ${param.type === "boolean" ? "flex-1" : "justify-between"}`}>
+                          <label className="text-[10px] font-bold text-gray-500 uppercase leading-tight">
+                            {param.label}
+                          </label>
+                          {param.help && <HelpTooltip content={param.help} align={paramIndex % 2 === 1 ? "right" : "center"} />}
+                        </div>
                         {param.type === "select" ? (
                           <select
                             value={set.params[param.name] ?? param.default}
@@ -511,7 +543,10 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
           {isAdvancedOpen && (
             <div className="space-y-6 pt-2">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-gray-600">Seed</label>
+                <div className="flex items-center justify-between gap-1">
+                  <label className="text-xs font-semibold text-gray-600">Seed</label>
+                  <HelpTooltip content="A unique key that determines the exact problems generated. Use the same seed to recreate a worksheet." align="right" />
+                </div>
                 <input
                   type="text"
                   value={config.seed ?? ""}
@@ -530,7 +565,10 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                     onChange={(e) => updateLayout("showSeed", e.target.checked)}
                     className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
                   />
-                  <label htmlFor="showSeed" className="text-xs font-semibold text-gray-600">Show Seed on Printout</label>
+                  <label htmlFor="showSeed" className="text-xs font-semibold text-gray-600 flex items-center gap-1">
+                    Show Seed on Printout
+                    <HelpTooltip content="If enabled, the seed will be printed at the bottom of the worksheet." align="right" />
+                  </label>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -541,14 +579,20 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                     onChange={(e) => updateLayout("showConfigKey", e.target.checked)}
                     className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
                   />
-                  <label htmlFor="showConfigKey" className="text-xs font-semibold text-gray-600">Show Base64 Footer</label>
+                  <label htmlFor="showConfigKey" className="text-xs font-semibold text-gray-600 flex items-center gap-1">
+                    Show Base64 Footer
+                    <HelpTooltip content="If enabled, a Base64 encoded key of the entire configuration will be printed at the bottom." align="right" />
+                  </label>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-600 flex items-center gap-1">
-                  <Key size={12} /> Load from Base64 Key
-                </label>
+                <div className="flex items-center justify-between gap-1">
+                  <label className="text-xs font-semibold text-gray-600 flex items-center gap-1">
+                    <Key size={12} /> Load from Base64 Key
+                  </label>
+                  <HelpTooltip content="Paste a Base64 key to quickly load a previously saved configuration." align="right" />
+                </div>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -570,18 +614,28 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
               <div className="pt-4 border-t border-gray-100 space-y-3">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Presets</label>
                 <div className="grid grid-cols-2 gap-2">
-                  <button
-                    onClick={savePreset}
-                    className="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md text-xs font-semibold hover:bg-gray-50 transition-colors"
-                  >
-                    <Save size={14} /> Save Preset
-                  </button>
-                  <button
-                    onClick={loadPreset}
-                    className="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md text-xs font-semibold hover:bg-gray-50 transition-colors"
-                  >
-                    <FolderOpen size={14} /> Load Preset
-                  </button>
+                  <div className="flex flex-col gap-1">
+                    <button
+                      onClick={savePreset}
+                      className="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md text-xs font-semibold hover:bg-gray-50 transition-colors"
+                    >
+                      <Save size={14} /> Save Preset
+                    </button>
+                    <div className="flex justify-center">
+                      <HelpTooltip content="Save the current configuration to your browser's local storage." />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <button
+                      onClick={loadPreset}
+                      className="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md text-xs font-semibold hover:bg-gray-50 transition-colors"
+                    >
+                      <FolderOpen size={14} /> Load Preset
+                    </button>
+                    <div className="flex justify-center">
+                      <HelpTooltip content="Load a previously saved configuration from your browser's local storage." align="right" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

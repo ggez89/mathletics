@@ -101,6 +101,7 @@ export const paramSchema: ParamSchemaItem[] = [
   {
     name: "operation",
     label: "Operation",
+    help: "Choose the mathematical operation for fraction problems.",
     type: "select",
     default: defaultParams.operation,
     fullWidth: true,
@@ -114,6 +115,7 @@ export const paramSchema: ParamSchemaItem[] = [
   {
     name: "useLikeDenominators",
     label: "Use Like Denominators",
+    help: "If enabled, both fractions will have the same denominator (easier for add/sub).",
     type: "boolean",
     default: defaultParams.useLikeDenominators,
     fullWidth: true,
@@ -121,24 +123,28 @@ export const paramSchema: ParamSchemaItem[] = [
   {
     name: "minNumerator",
     label: "Min Numerator",
+    help: "The minimum value for the top number (numerator) of the fractions.",
     type: "number",
     default: defaultParams.minNumerator,
   },
   {
     name: "maxNumerator",
     label: "Max Numerator",
+    help: "The maximum value for the top number (numerator) of the fractions.",
     type: "number",
     default: defaultParams.maxNumerator,
   },
   {
     name: "minDenominator",
     label: "Min Denominator",
+    help: "The minimum value for the bottom number (denominator) of the fractions.",
     type: "number",
     default: defaultParams.minDenominator,
   },
   {
     name: "maxDenominator",
     label: "Max Denominator",
+    help: "The maximum value for the bottom number (denominator) of the fractions.",
     type: "number",
     default: defaultParams.maxDenominator,
   },
