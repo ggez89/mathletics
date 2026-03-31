@@ -12,10 +12,10 @@ A professional, highly customizable math worksheet generator designed for educat
   - **Fractions**: Addition, Subtraction, Multiplication, and Division with optional unreduced answer forms and "Like Denominators" mode.
   - **Time Telling**: Analog clock practice with **Identify** (read the clock) and **Draw** (draw the hands) modes. Includes "Scenarios" (e.g., "I wake up at...") for real-world context.
 - **Advanced Customization**:
-  - Set minimum and maximum values for operands, numerators, and denominators.
-  - Enforce "Max Answer" limits across all operations.
-  - Toggle "Allow Remainders" for division with standard "Quotient R Remainder" notation.
-  - "Disallow Quotient 1" option to ensure meaningful practice.
+  - **Value Ranges**: Set minimum and maximum values for operands, numerators, and denominators.
+  - **Max Answer**: Enforce "Max Answer" limits across all operations.
+  - **Division Remainders**: Toggle "Allow Remainders" for division with standard "Quotient R Remainder" notation.
+  - **Quotient Validation**: "Disallow Quotient 1" option to ensure meaningful practice.
   - **Clock Customization**: Toggle minute ticks and choose between "All Numbers" or "Major Numbers" (12, 3, 6, 9) on clock faces.
 - **Professional Layout & Pagination**:
   - **Strict 8.5" x 11" Rendering**: Worksheets are rendered in a fixed-height container to ensure perfect print alignment.
