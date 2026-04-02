@@ -48,14 +48,14 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
   }, []);
 
   const autoProblemsPerPage = useMemo(() => {
-    const calculatedPerPage = calculateAutoProblemsPerPage(config);
+    const calculatedPerPage = calculateAutoProblemsPerPage(config, showAnswers);
 
     if (config.layout.paginationMode !== "pages") {
       return Math.min(config.layout.problemsPerPage, calculatedPerPage);
     }
     
     return calculatedPerPage;
-  }, [config.layout.paginationMode, config.layout.fontSize, config.layout.spacing, config.layout.problemsPerRow, config.layout.problemsPerPage, config.problemSets]);
+  }, [config.layout.paginationMode, config.layout.fontSize, config.layout.spacing, config.layout.problemsPerRow, config.layout.problemsPerPage, config.problemSets, showAnswers]);
 
   const problems = useMemo(() => {
     const rng = seedrandom(config.seed);
@@ -64,8 +64,9 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
     if (!config.problemSets || config.problemSets.length === 0) return [];
 
     const weights = config.problemSets.map((s) => s.weight || 0);
+    const blankCapacity = calculateAutoProblemsPerPage(config, false);
     const totalCount = config.layout.paginationMode === "pages" 
-      ? config.layout.pageCount * autoProblemsPerPage 
+      ? config.layout.pageCount * blankCapacity 
       : config.count;
 
     // Track seen problems per problem set to avoid duplicates until exhausted
@@ -115,7 +116,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
     }
 
     return generated;
-  }, [config.seed, config.count, config.problemSets, config.layout.paginationMode, config.layout.pageCount, autoProblemsPerPage]);
+  }, [config.seed, config.count, config.problemSets, config.layout.paginationMode, config.layout.pageCount, config.layout.fontSize, config.layout.spacing, config.layout.problemsPerRow]);
 
   const displayTitle = useMemo(() => {
     return config.layout.title || generateTitle(config);
@@ -186,7 +187,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
           <div 
             className="relative w-[8.5in] h-[11in] max-h-[11in] bg-white shadow-2xl px-8 pt-8 pb-8 flex flex-col overflow-hidden print:shadow-none print:w-[8.5in] print:h-[11in] print:min-h-[11in] print:px-8 print:pt-8 print:pb-8 print:border-0 print:break-after-page print:mx-auto"
           >
-            <header className="mb-6 space-y-4">
+            <header className="mb-6 space-y-4 shrink-0">
             <div className="flex justify-between items-end border-b-4 border-black pb-4">
               <div className="flex-1 min-w-0 pr-24">
                 <div className="flex items-center gap-4">
@@ -237,7 +238,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
             </div>
           </header>
 
-          <main className="flex-1 pb-4" style={gridStyle}>
+          <main className="flex-1 min-h-0 pb-4 overflow-hidden" style={gridStyle}>
             {pageProblems.map((problem, index) => (
               <div key={problem.id} className="break-inside-avoid">
                 <ProblemRenderer
@@ -249,7 +250,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
             ))}
           </main>
 
-          <footer className="mt-auto pt-8 flex justify-between items-end text-[9px] text-gray-400 font-mono print:absolute print:bottom-8 print:left-8 print:right-8 print:pt-0 print:text-gray-600">
+          <footer className="mt-auto pt-8 flex justify-between items-end text-[9px] text-gray-400 font-mono shrink-0 print:absolute print:bottom-8 print:left-8 print:right-8 print:pt-0 print:text-gray-600">
             <div className="flex-1">
               {config.layout.showConfigKey && (
                 <div className="max-w-[80%] break-all mb-2">

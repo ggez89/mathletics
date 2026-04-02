@@ -474,7 +474,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                       }
                       // Also hide division specific params if not division
                       if (param.name === "allowRemainder" || param.name === "disallowOne") {
-                        return set.params.operation === "÷";
+                        return set.type === "longDivision" || (set.type === "arithmetic" && set.params.operation === "÷");
                       }
                       if (param.name === "useScenarios") {
                         return set.type === "time" && set.params.mode === "draw";

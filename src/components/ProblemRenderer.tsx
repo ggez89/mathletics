@@ -14,14 +14,14 @@ interface ProblemRendererProps {
 
 export const ProblemRenderer: React.FC<ProblemRendererProps> = ({ problem, showAnswers, number }) => {
   const { format, data } = problem.question;
-  const { display } = problem.answer;
+  const { display, value } = problem.answer;
 
   const renderContent = () => {
     switch (format) {
       case "fraction":
         return <FractionRenderer data={data} showAnswer={showAnswers} answer={display} />;
       case "longDivision":
-        return <LongDivisionRenderer data={data} showAnswer={showAnswers} answer={display} />;
+        return <LongDivisionRenderer data={data} showAnswer={showAnswers} answer={display} steps={value?.steps} />;
       case "vertical":
         return <VerticalRenderer data={data} showAnswer={showAnswers} answer={display} />;
       case "time":
@@ -33,8 +33,10 @@ export const ProblemRenderer: React.FC<ProblemRendererProps> = ({ problem, showA
   };
 
   return (
-    <div className={`flex items-start gap-2 ${format === "longDivision" ? "pt-8 pb-1 print:pt-10 print:pb-2" : "py-2 print:py-4"} px-2 border border-transparent hover:border-gray-100 transition-colors`}>
-      <div className="font-bold text-gray-400 min-w-[1.5rem] pt-1">{number}.</div>
+    <div className={`flex items-start gap-2 ${format === "longDivision" ? "py-2 print:py-3" : "py-2 print:py-4"} px-2 border border-transparent hover:border-gray-100 transition-colors`}>
+      <div className={`font-bold text-gray-600 min-w-[1.5rem] ${format === "longDivision" ? "mt-[1.8rem] h-[1.8rem] flex items-center font-mono text-lg" : "pt-1"}`}>
+        {number}.
+      </div>
       <div className="flex-1 flex justify-center">
         {renderContent()}
       </div>

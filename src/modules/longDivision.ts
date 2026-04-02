@@ -30,6 +30,10 @@ export function generate(rng: () => number, params: any = {}): Problem {
 
     while (attempts < 50 && !found) {
       divisor = randInt(rng, minDivisor, maxDivisor);
+      if (disallowOne && divisor === 1 && maxDivisor > 1) {
+        divisor = randInt(rng, 2, maxDivisor);
+      }
+      
       const minQ = (disallowOne) ? 2 : 1;
       const maxQ = Math.floor(maxDividend / divisor);
       
@@ -43,27 +47,68 @@ export function generate(rng: () => number, params: any = {}): Problem {
     }
     
     if (!found) {
-      // Fallback: ignore disallowOne if we really can't find anything
+      // Fallback
       divisor = randInt(rng, minDivisor, maxDivisor);
-      const actualMinQ = Math.ceil(minDividend / divisor);
+      if (disallowOne && divisor === 1 && maxDivisor > 1) divisor = 2;
+      
+      const minQ = disallowOne ? 2 : 1;
+      const actualMinQ = Math.max(minQ, Math.ceil(minDividend / divisor));
       const maxQ = Math.floor(maxDividend / divisor);
       if (actualMinQ <= maxQ) {
         quotient = randInt(rng, actualMinQ, maxQ);
       } else {
         // Absolute fallback
-        divisor = minDivisor;
-        dividend = minDividend;
+        divisor = (disallowOne && minDivisor === 1) ? 2 : minDivisor;
+        dividend = Math.max(minDividend, divisor * (disallowOne ? 2 : 1));
         quotient = Math.floor(dividend / divisor);
       }
     }
     dividend = divisor * quotient;
   } else {
-    dividend = randInt(rng, minDividend, maxDividend);
     divisor = randInt(rng, minDivisor, maxDivisor);
+    if (disallowOne && divisor === 1 && maxDivisor > 1) {
+      divisor = randInt(rng, 2, maxDivisor);
+    }
+    dividend = randInt(rng, minDividend, maxDividend);
   }
 
   const quotient = Math.floor(dividend / divisor);
   const remainder = dividend % divisor;
+
+  // Generate step-by-step solution
+  const dividendStr = dividend.toString();
+  const steps: any[] = [];
+  let currentVal = 0;
+  let hasStarted = false;
+
+  for (let i = 0; i < dividendStr.length; i++) {
+    const digit = parseInt(dividendStr[i]);
+    const prevVal = currentVal;
+    currentVal = currentVal * 10 + digit;
+    
+    // If we haven't started yet and the current value is less than the divisor, 
+    // we just keep bringing down digits (unless it's the last digit)
+    if (!hasStarted && currentVal < divisor && i < dividendStr.length - 1) {
+      continue;
+    }
+    
+    hasStarted = true;
+    const quotientDigit = Math.floor(currentVal / divisor);
+    const product = quotientDigit * divisor;
+    const stepRemainder = currentVal - product;
+    
+    steps.push({
+      prevVal,
+      digit,
+      currentVal,
+      quotientDigit,
+      product,
+      remainder: stepRemainder,
+      digitIndex: i
+    });
+    
+    currentVal = stepRemainder;
+  }
 
   return {
     id: uuidv4(),
@@ -76,7 +121,7 @@ export function generate(rng: () => number, params: any = {}): Problem {
       },
     },
     answer: {
-      value: { quotient, remainder },
+      value: { quotient, remainder, steps },
       display: remainder > 0 ? `${quotient} R ${remainder}` : `${quotient}`,
     },
   };
@@ -87,7 +132,7 @@ export const defaultParams = {
   maxDividend: 20,
   minDivisor: 1,
   maxDivisor: 10,
-  allowRemainder: true,
+  allowRemainder: false,
   disallowOne: true,
 };
 
@@ -101,8 +146,8 @@ export const paramSchema: ParamSchemaItem[] = [
   },
   {
     name: "disallowOne",
-    label: "No Quotient 1",
-    help: "Prevents problems where the answer is 1 (e.g., 5 ÷ 5). Only applies when remainders are disabled.",
+    label: "No 1",
+    help: "Prevents problems where the answer is 1 OR the divisor is 1.",
     type: "boolean",
     default: defaultParams.disallowOne,
   },

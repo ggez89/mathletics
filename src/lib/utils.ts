@@ -108,10 +108,10 @@ export function generateTitle(config: WorksheetConfig): string {
 /**
  * Calculates the maximum number of problems that can fit on a page based on layout settings.
  */
-export function calculateAutoProblemsPerPage(config: WorksheetConfig): number {
+export function calculateAutoProblemsPerPage(config: WorksheetConfig, showAnswers: boolean = false): number {
   // Heuristic: 11in page = 1056px. 
-  // Subtract margins (64px), header (~180px), footer (~120px)
-  const availableHeight = 1056 - 64 - 180 - 120;
+  // Subtract margins (64px), header (~160px), footer (~120px)
+  const availableHeight = 1056 - 64 - 160 - 120;
   
   let maxProblemHeight = 0;
   
@@ -120,7 +120,15 @@ export function calculateAutoProblemsPerPage(config: WorksheetConfig): number {
     let h = 0;
     switch (format) {
       case "longDivision":
-        h = 130;
+        // Estimate height based on dividend length (each digit adds ~2 rows of steps)
+        // We look for the first longDivision set to get a representative maxDividend
+        const ldSet = config.problemSets.find(s => s.type === "longDivision");
+        const maxDiv = ldSet?.params.maxDividend || 100;
+        // Number of digits in dividend is floor(log10(maxDiv)) + 1
+        const digits = Math.floor(Math.log10(maxDiv)) + 1;
+        // Each digit can have a step (2 rows). Plus dividend/quotient rows.
+        // We use 32px per row (2rem) for safety.
+        h = showAnswers ? (digits * 2 + 2) * 32 : 120; 
         break;
       case "time":
         h = 190; // Reduced further to ensure 3 rows (6 clocks) fit on a page
@@ -141,8 +149,6 @@ export function calculateAutoProblemsPerPage(config: WorksheetConfig): number {
 
   // Add renderer padding (py-2 = 16px total) and spacing
   const estimatedProblemHeight = maxProblemHeight + config.layout.spacing + 16;
-  const hasFractions = config.problemSets.some(s => s.type === "fraction");
-  const maxPerRow = hasFractions ? 2 : 3;
   const rows = Math.max(1, Math.floor(availableHeight / estimatedProblemHeight));
   const calculatedPerPage = rows * config.layout.problemsPerRow;
   
