@@ -197,7 +197,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
                     <X size={16} strokeWidth={3} className="text-black" />
                     <Divide size={16} strokeWidth={3} className="text-black" />
                   </div>
-                  <div ref={titleParentRef} className="flex-1 min-w-0 overflow-hidden">
+                  <div ref={titleParentRef} className="flex-1 min-w-0 overflow-hidden h-[44px] flex items-center">
                     <h1 
                       ref={titleRef}
                       className="text-4xl font-black uppercase tracking-tighter leading-none whitespace-nowrap origin-left"

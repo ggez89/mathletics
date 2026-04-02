@@ -33,8 +33,8 @@ export const ProblemRenderer: React.FC<ProblemRendererProps> = ({ problem, showA
   };
 
   return (
-    <div className={`flex items-start gap-2 ${format === "longDivision" ? "py-2 print:py-3" : "py-2 print:py-4"} px-2 border border-transparent hover:border-gray-100 transition-colors`}>
-      <div className={`font-bold text-gray-600 min-w-[1.5rem] ${format === "longDivision" ? "mt-[1.8rem] h-[1.8rem] flex items-center font-mono text-lg" : "pt-1"}`}>
+    <div className={`flex ${format === "inline" ? "items-center" : "items-start"} gap-2 ${format === "longDivision" ? "py-2 print:py-3" : "py-2 print:py-4"} px-2 border border-transparent hover:border-gray-100 transition-colors`}>
+      <div className={`font-bold text-black min-w-[1.5rem] ${format === "longDivision" ? "mt-[1.8rem] h-[1.8rem] flex items-center font-mono text-lg" : format === "inline" ? "flex items-center h-8 font-mono text-lg" : "pt-1"}`}>
         {number}.
       </div>
       <div className="flex-1 flex justify-center">

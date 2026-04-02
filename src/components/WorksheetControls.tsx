@@ -204,14 +204,14 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
     <div className="h-full flex flex-col bg-gray-50 border-r border-gray-200">
       <div className="flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar">
         <header className="flex flex-col items-center gap-1 md:gap-3 pb-2 md:pb-4 border-b border-gray-200">
-          <div className="flex items-center justify-center gap-2">
-            <div className="grid grid-cols-2 gap-0.5 p-1 bg-white border border-black rounded shadow-sm">
+          <div className="flex items-center justify-center gap-3">
+            <div className="grid grid-cols-2 gap-0.5 p-1 bg-white border border-black rounded shadow-sm shrink-0">
               <Plus size={12} strokeWidth={3} className="text-black" />
               <Minus size={12} strokeWidth={3} className="text-black" />
               <X size={12} strokeWidth={3} className="text-black" />
               <Divide size={12} strokeWidth={3} className="text-black" />
             </div>
-            <h1 className="text-xl md:text-2xl font-light tracking-widest text-black uppercase">
+            <h1 className="text-2xl font-light tracking-[0.2em] text-black uppercase leading-[28px] h-[28px] flex items-center">
               Mathletics
             </h1>
           </div>
@@ -221,32 +221,156 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
         </header>
 
         <section className="space-y-4">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="flex gap-2">
             <button
               onClick={() => onPrint(false)}
-              className="flex items-center justify-center gap-2 px-4 py-3 bg-black text-white rounded-md text-sm font-bold hover:bg-gray-800 transition-colors shadow-sm"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-black text-white rounded-md text-sm font-bold hover:bg-gray-800 transition-colors shadow-sm"
             >
-              <Printer size={16} /> Print Worksheet
+              <Printer size={20} /> Print Worksheet
             </button>
             <button
               onClick={() => onPrint(true)}
-              className="flex items-center justify-center gap-2 px-4 py-3 bg-white border-2 border-red-600 text-red-600 rounded-md text-sm font-bold hover:bg-red-50 transition-colors shadow-sm"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border-2 border-red-600 text-red-600 rounded-md text-sm font-bold hover:bg-red-50 transition-colors shadow-sm"
             >
-              <Printer size={16} /> Print Answers
+              <Printer size={20} /> Print Answers
+            </button>
+            <button
+              onClick={handleNewSeed}
+              className="p-3 bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition-colors shadow-sm text-gray-600"
+              title="Regenerate Problems"
+            >
+              <RefreshCw size={20} />
             </button>
           </div>
         </section>
 
         <section className="space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">Page Settings</h2>
+            <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">Problem Sets</h2>
             <button
-              onClick={handleNewSeed}
-              className="flex items-center gap-1 px-3 py-1 bg-white border border-gray-300 text-gray-700 text-xs font-bold rounded-md hover:bg-gray-100 transition-colors"
-              title="Regenerate Problems"
+              onClick={addProblemSet}
+              className="flex items-center gap-1 px-3 py-1 bg-black text-white text-xs font-bold rounded-md hover:bg-gray-800 transition-colors"
             >
-              <RefreshCw size={14} /> Regenerate
+              <Plus size={14} /> Add Set
             </button>
+          </div>
+
+          <div className="space-y-4">
+            {config.problemSets?.map((set, setIndex) => (
+              <div key={setIndex} className="p-4 bg-white border border-gray-200 rounded-lg space-y-4 shadow-sm">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">
+                        SET {setIndex + 1}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Weight</label>
+                        <HelpTooltip content="The relative frequency of this problem set compared to others." align="right" />
+                        <input
+                          type="number"
+                          value={set.weight ?? 1}
+                          onChange={(e) => updateProblemSet(setIndex, { weight: parseFloat(e.target.value) || 0 })}
+                          onFocus={(e) => e.target.select()}
+                          className="w-10 px-1 py-0.5 bg-gray-50 border border-gray-200 rounded text-[10px] text-center font-bold text-gray-600"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => removeProblemSet(setIndex)}
+                      className="p-1 text-gray-300 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                  
+                  <div className="relative">
+                    <select
+                      value={set.type}
+                      onChange={(e) => updateProblemSet(setIndex, { type: e.target.value })}
+                      className="w-full pl-3 pr-10 py-2.5 bg-gray-50 border border-black rounded-md text-xs font-black uppercase tracking-[0.15em] text-black focus:outline-none focus:ring-0 appearance-none cursor-pointer hover:bg-white transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,0.05)]"
+                    >
+                      <option value="arithmetic">Basic Arithmetic</option>
+                      <option value="fraction">Fractions</option>
+                      <option value="longDivision">Long Division</option>
+                      <option value="time">Time Telling</option>
+                    </select>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-black">
+                      <ChevronDown size={14} strokeWidth={3} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+                  {PROBLEM_MODULES[set.type]?.paramSchema
+                    .filter((param: ParamSchemaItem) => {
+                      if (param.name === "disallowCarryover") {
+                        return set.type === "arithmetic" && 
+                               set.params.format === "vertical" && 
+                               (set.params.operation === "+" || set.params.operation === "−" || set.params.operation === "-");
+                      }
+                      // Also hide division specific params if not division
+                      if (param.name === "allowRemainder" || param.name === "disallowOne") {
+                        return set.type === "longDivision" || (set.type === "arithmetic" && set.params.operation === "÷");
+                      }
+                      if (param.name === "useScenarios") {
+                        return set.type === "time" && set.params.mode === "draw";
+                      }
+                      return true;
+                    })
+                    .map((param: ParamSchemaItem, paramIndex: number) => (
+                      <div key={param.name} className={`space-y-1 ${param.type === "boolean" ? "flex items-start justify-between gap-2 pt-4" : ""} ${param.fullWidth ? "col-span-2" : ""} min-w-0`}>
+                        <div className={`flex items-center gap-1 min-w-0 ${param.type === "boolean" ? "flex-1" : "justify-between"}`}>
+                          <label className="text-[10px] font-bold text-gray-500 uppercase leading-tight">
+                            {param.label}
+                          </label>
+                          {param.help && <HelpTooltip content={param.help} align={paramIndex % 2 === 1 ? "right" : "center"} />}
+                        </div>
+                        {param.type === "select" ? (
+                          <select
+                            value={set.params[param.name] ?? param.default}
+                            onChange={(e) => updateParams(setIndex, param.name, e.target.value)}
+                            className={`w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs transition-all ${flashingFields[`${setIndex}-${param.name}`] ? "animate-flash-red" : ""}`}
+                          >
+                            {param.options?.map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </select>
+                        ) : param.type === "boolean" ? (
+                          <input
+                            type="checkbox"
+                            checked={set.params[param.name] ?? param.default}
+                            onChange={(e) => updateParams(setIndex, param.name, e.target.checked)}
+                            className={`w-4 h-4 rounded border-gray-300 text-black focus:ring-black transition-all ${flashingFields[`${setIndex}-${param.name}`] ? "animate-flash-red" : ""}`}
+                          />
+                        ) : (
+                          <input
+                            type={param.type}
+                            value={set.params[param.name] ?? ""}
+                            onChange={(e) =>
+                              updateParams(
+                                setIndex,
+                                param.name,
+                                param.type === "number" ? parseFloat(e.target.value) : e.target.value
+                              )
+                            }
+                            onFocus={(e) => e.target.select()}
+                            className={`w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs transition-all ${flashingFields[`${setIndex}-${param.name}`] ? "animate-flash-red" : ""}`}
+                          />
+                        )}
+                      </div>
+                    ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">Page Settings</h2>
           </div>
           
           <div className="space-y-1">
@@ -418,118 +542,6 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
           </div>
         </section>
 
-        <section className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">Problem Sets</h2>
-            <button
-              onClick={addProblemSet}
-              className="flex items-center gap-1 px-3 py-1 bg-black text-white text-xs font-bold rounded-md hover:bg-gray-800 transition-colors"
-            >
-              <Plus size={14} /> Add Set
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            {config.problemSets?.map((set, setIndex) => (
-              <div key={setIndex} className="p-4 bg-white border border-gray-200 rounded-lg space-y-4 shadow-sm">
-                <div className="flex justify-between items-center gap-2">
-                  <select
-                    value={set.type}
-                    onChange={(e) => updateProblemSet(setIndex, { type: e.target.value })}
-                    className="flex-1 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-sm font-medium"
-                  >
-                    <option value="arithmetic">Basic Arithmetic</option>
-                    <option value="fraction">Fractions</option>
-                    <option value="longDivision">Long Division</option>
-                    <option value="time">Time Telling</option>
-                  </select>
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1">
-                      <label className="text-[10px] font-bold text-gray-400 uppercase">Weight</label>
-                      <HelpTooltip content="The relative frequency of this problem set compared to others." align="right" />
-                    </div>
-                    <input
-                      type="number"
-                      value={set.weight ?? 1}
-                      onChange={(e) => updateProblemSet(setIndex, { weight: parseFloat(e.target.value) || 0 })}
-                      onFocus={(e) => e.target.select()}
-                      className="w-12 px-1 py-1 bg-gray-50 border border-gray-200 rounded text-xs text-center"
-                    />
-                    <button
-                      onClick={() => removeProblemSet(setIndex)}
-                      className="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-x-3 gap-y-2">
-                  {PROBLEM_MODULES[set.type]?.paramSchema
-                    .filter((param: ParamSchemaItem) => {
-                      if (param.name === "disallowCarryover") {
-                        return set.type === "arithmetic" && 
-                               set.params.format === "vertical" && 
-                               (set.params.operation === "+" || set.params.operation === "−" || set.params.operation === "-");
-                      }
-                      // Also hide division specific params if not division
-                      if (param.name === "allowRemainder" || param.name === "disallowOne") {
-                        return set.type === "longDivision" || (set.type === "arithmetic" && set.params.operation === "÷");
-                      }
-                      if (param.name === "useScenarios") {
-                        return set.type === "time" && set.params.mode === "draw";
-                      }
-                      return true;
-                    })
-                    .map((param: ParamSchemaItem, paramIndex: number) => (
-                      <div key={param.name} className={`space-y-1 ${param.type === "boolean" ? "flex items-start justify-between gap-2 pt-4" : ""} ${param.fullWidth ? "col-span-2" : ""} min-w-0`}>
-                        <div className={`flex items-center gap-1 min-w-0 ${param.type === "boolean" ? "flex-1" : "justify-between"}`}>
-                          <label className="text-[10px] font-bold text-gray-500 uppercase leading-tight">
-                            {param.label}
-                          </label>
-                          {param.help && <HelpTooltip content={param.help} align={paramIndex % 2 === 1 ? "right" : "center"} />}
-                        </div>
-                        {param.type === "select" ? (
-                          <select
-                            value={set.params[param.name] ?? param.default}
-                            onChange={(e) => updateParams(setIndex, param.name, e.target.value)}
-                            className={`w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs transition-all ${flashingFields[`${setIndex}-${param.name}`] ? "animate-flash-red" : ""}`}
-                          >
-                            {param.options?.map((opt) => (
-                              <option key={opt.value} value={opt.value}>
-                                {opt.label}
-                              </option>
-                            ))}
-                          </select>
-                        ) : param.type === "boolean" ? (
-                          <input
-                            type="checkbox"
-                            checked={set.params[param.name] ?? param.default}
-                            onChange={(e) => updateParams(setIndex, param.name, e.target.checked)}
-                            className={`w-4 h-4 rounded border-gray-300 text-black focus:ring-black transition-all ${flashingFields[`${setIndex}-${param.name}`] ? "animate-flash-red" : ""}`}
-                          />
-                        ) : (
-                          <input
-                            type={param.type}
-                            value={set.params[param.name] ?? ""}
-                            onChange={(e) =>
-                              updateParams(
-                                setIndex,
-                                param.name,
-                                param.type === "number" ? parseFloat(e.target.value) : e.target.value
-                              )
-                            }
-                            onFocus={(e) => e.target.select()}
-                            className={`w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs transition-all ${flashingFields[`${setIndex}-${param.name}`] ? "animate-flash-red" : ""}`}
-                          />
-                        )}
-                      </div>
-                    ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
 
         <section className="space-y-4 pt-4 border-t border-gray-200">
           <button
