@@ -189,8 +189,8 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
             className="relative w-[8.5in] h-[11in] max-h-[11in] bg-white shadow-2xl px-8 pt-8 pb-8 flex flex-col overflow-hidden print:shadow-none print:w-[8.5in] print:h-[11in] print:min-h-[11in] print:px-8 print:pt-8 print:pb-8 print:border-0 print:break-after-page print:mx-auto"
           >
             <header className="mb-6 space-y-4 shrink-0">
-            <div className="flex justify-between items-end border-b-4 border-black pb-4">
-              <div className="flex-1 min-w-0 pr-24">
+            <div className="flex justify-between items-end border-b-4 border-black pb-4 gap-8">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-4">
                   <div className="grid grid-cols-2 gap-0.5 p-1 bg-white border-2 border-black rounded shadow-sm shrink-0">
                     <Plus size={16} strokeWidth={3} className="text-black" />

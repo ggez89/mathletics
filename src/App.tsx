@@ -9,14 +9,14 @@ const DEFAULT_CONFIG: WorksheetConfig = {
   version: "1.0.0",
   seed: generateSeed(),
   layout: {
-    problemsPerRow: 3,
+    problemsPerRow: 2,
     fontSize: 20,
-    spacing: 20,
+    spacing: 10,
     title: "", // Empty for auto-generation
     showAnswers: false,
     showSeed: false,
     showConfigKey: false,
-    showQRCode: false,
+    showQRCode: true,
     paginationMode: "pages",
     problemsPerPage: 20,
     pageCount: 1,

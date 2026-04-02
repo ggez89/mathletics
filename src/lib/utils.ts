@@ -110,8 +110,8 @@ export function generateTitle(config: WorksheetConfig): string {
  */
 export function calculateAutoProblemsPerPage(config: WorksheetConfig, showAnswers: boolean = false): number {
   // Heuristic: 11in page = 1056px. 
-  // Subtract margins (64px), header (~160px), footer (~120px)
-  const availableHeight = 1056 - 64 - 160 - 120;
+  // Subtract margins (64px), header (~180px), footer (~140px)
+  const availableHeight = 1056 - 64 - 180 - 140;
   
   let maxProblemHeight = 0;
   
@@ -147,8 +147,8 @@ export function calculateAutoProblemsPerPage(config: WorksheetConfig, showAnswer
     maxProblemHeight = Math.max(maxProblemHeight, h);
   });
 
-  // Add renderer padding (py-2 = 16px total) and spacing
-  const estimatedProblemHeight = maxProblemHeight + config.layout.spacing + 16;
+  // Add renderer padding (print:py-3 = 24px total) and spacing
+  const estimatedProblemHeight = maxProblemHeight + config.layout.spacing + 24;
   const rows = Math.max(1, Math.floor(availableHeight / estimatedProblemHeight));
   const calculatedPerPage = rows * config.layout.problemsPerRow;
   

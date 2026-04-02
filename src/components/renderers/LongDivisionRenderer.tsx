@@ -52,7 +52,7 @@ export default function LongDivisionRenderer({ data, showAnswer, answer, steps }
         width: `${divisorStr.length * DIGIT_W}rem`,
         height: `${ROW_H}rem`,
         marginTop: `${ROW_H}rem`,
-        paddingRight: '0.25rem'
+        paddingRight: '0.6rem'
       }}>
         {divisorStr}
       </div>
@@ -185,12 +185,13 @@ export default function LongDivisionRenderer({ data, showAnswer, answer, steps }
                       style={{ 
                         left: `${(step.digitIndex + 1) * DIGIT_W + DIGIT_W/2}rem`, 
                         top: `${1.8 * ROW_H}rem`,
-                        width: '1px'
+                        width: '1px',
+                        opacity: 0.6
                       }}
                     >
                       <defs>
                         <marker id={`arrow-${idx}`} markerWidth="5" markerHeight="5" refX="0" refY="2.5" orient="auto">
-                          <path d="M 0 0 L 5 2.5 L 0 5 z" fill={stepColors[(idx + 1) % stepColors.length]} opacity="0.6" />
+                          <path d="M 0 0 L 5 2.5 L 0 5 z" fill={stepColors[(idx + 1) % stepColors.length]} />
                         </marker>
                       </defs>
                       <line 
@@ -198,7 +199,6 @@ export default function LongDivisionRenderer({ data, showAnswer, answer, steps }
                         x2="0" y2={`${(remainderRow - 1.8) * ROW_H * 16 - 5}px`} 
                         stroke={stepColors[(idx + 1) % stepColors.length]} 
                         strokeWidth="1.5" 
-                        opacity="0.6"
                         markerEnd={`url(#arrow-${idx})`}
                       />
                     </svg>

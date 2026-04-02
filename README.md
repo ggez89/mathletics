@@ -7,7 +7,7 @@ A professional, highly customizable math worksheet generator designed for educat
 ## Features
 
 - **Multiple Problem Modules**:
-  - **Basic Arithmetic**: Addition, Subtraction, Multiplication (×), and Division (÷).
+  - **Basic Arithmetic**: Addition (+), Subtraction (−), Multiplication (×), and Division (÷).
   - **Long Division**: Customizable dividend and divisor ranges with remainder toggles. Includes **full step-by-step visual solutions** showing subtractions, bring-down arrows, and intermediate steps for easy grading and learning.
   - **Fractions**: Addition, Subtraction, Multiplication, and Division with optional unreduced answer forms and "Like Denominators" mode.
   - **Time Telling**: Analog clock practice with **Identify** (read the clock) and **Draw** (draw the hands) modes. Includes "Scenarios" (e.g., "I wake up at...") for real-world context.
@@ -40,11 +40,10 @@ A professional, highly customizable math worksheet generator designed for educat
 ## Getting Started
 
 0. **[Open the Web App](https://ggez89.github.io/mathletics/)**.
-1. **Adjust Page Settings**: Set your worksheet title, font size, and layout preferences.
-2. **Select Problem Type**: Choose a module from the sidebar (Arithmetic, Long Division, Fractions, or Time Telling).
-3. **Adjust Parameters**: Fine-tune ranges, operations, and specific problem settings.
-4. **Enable QR Code**: (Optional) Toggle "Show Answer QR Code" in Advanced Controls to include a digital answer key on your printout.
-5. **Print Worksheet**: Click **Print Worksheet** to send to your printer or select "Save as PDF" in the print destination.
+1. **Configure Problem Sets**: Choose problem modules (Arithmetic, Long Division, Fractions, or Time Telling) and fine-tune their parameters.
+2. **Adjust Page Settings**: Set your worksheet title, font size, and layout preferences. QR codes are enabled by default for easy answer lookup.
+3. **Advanced Controls**: (Optional) Manage seeds, Base64 keys, and presets for full reproducibility.
+4. **Print Worksheet**: Click **Print Worksheet** to send to your printer or select "Save as PDF" in the print destination.
 
 ## Tech Stack
 
