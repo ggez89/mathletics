@@ -5,6 +5,7 @@ import { WorksheetConfig, Problem } from "../types";
 import { weightedRandomIndex, encodeConfig, generateTitle } from "../lib/utils";
 import ProblemRenderer from "./ProblemRenderer";
 import { Plus, Minus, X, Divide } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import * as fractionModule from "../modules/fraction";
 import * as longDivisionModule from "../modules/longDivision";
 import * as arithmeticModule from "../modules/arithmetic";
@@ -260,10 +261,23 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
               )}
               <div className="text-gray-400 text-[11px] print:text-gray-600">https://ggez89.github.io/mathletics/</div>
             </div>
-            <div className="text-right whitespace-nowrap">
-              {pages.length > 1 && (
-                <div className="text-gray-500 font-bold text-[11px] print:text-gray-700">PAGE {pageIndex + 1} OF {pages.length}</div>
+            <div className="flex flex-col items-end gap-2">
+              {config.layout.showQRCode && (
+                <div className="flex flex-col items-center gap-1">
+                  <QRCodeSVG 
+                    value={`https://ggez89.github.io/mathletics/?key=${base64Key}&mode=answers`}
+                    size={64}
+                    level="L"
+                    includeMargin={false}
+                  />
+                  <span className="text-[7px] font-bold uppercase text-gray-300 print:text-gray-400">Scan for Answers</span>
+                </div>
               )}
+              <div className="text-right whitespace-nowrap">
+                {pages.length > 1 && (
+                  <div className="text-gray-500 font-bold text-[11px] print:text-gray-700">PAGE {pageIndex + 1} OF {pages.length}</div>
+                )}
+              </div>
             </div>
           </footer>
         </div>

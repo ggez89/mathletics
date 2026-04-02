@@ -596,6 +596,20 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                     <HelpTooltip content="If enabled, a Base64 encoded key of the entire configuration will be printed at the bottom." align="right" />
                   </label>
                 </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="showQRCode"
+                    checked={config.layout.showQRCode ?? false}
+                    onChange={(e) => updateLayout("showQRCode", e.target.checked)}
+                    className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                  />
+                  <label htmlFor="showQRCode" className="text-xs font-semibold text-gray-600 flex items-center gap-1">
+                    Show Answer QR Code
+                    <HelpTooltip content="If enabled, a QR code will be printed at the bottom to quickly lookup answers." align="right" />
+                  </label>
+                </div>
               </div>
 
               <div className="space-y-2">

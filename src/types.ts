@@ -49,6 +49,7 @@ export interface LayoutSettings {
   showAnswers: boolean;
   showSeed: boolean;
   showConfigKey: boolean;
+  showQRCode: boolean;
   paginationMode: "count" | "pages";
   problemsPerPage: number;
   pageCount: number;

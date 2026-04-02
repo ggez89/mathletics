@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { WorksheetConfig } from "./types";
-import { generateSeed } from "./lib/utils";
+import { generateSeed, decodeConfig } from "./lib/utils";
 import WorksheetControls from "./components/WorksheetControls";
 import WorksheetPreview from "./components/WorksheetPreview";
 import { Menu, FileText } from "lucide-react";
@@ -16,6 +16,7 @@ const DEFAULT_CONFIG: WorksheetConfig = {
     showAnswers: false,
     showSeed: false,
     showConfigKey: false,
+    showQRCode: false,
     paginationMode: "pages",
     problemsPerPage: 20,
     pageCount: 1,
@@ -47,8 +48,18 @@ export default function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const key = params.get("key");
+    const mode = params.get("mode");
+    
     if (key) {
-      // We could handle this here if we want to support sharing via URL
+      const decoded = decodeConfig(key);
+      if (decoded) {
+        // If mode=answers is present, show answers automatically and close sidebar
+        if (mode === "answers") {
+          setShowAnswers(true);
+          setIsSidebarOpen(false);
+        }
+        setConfig(decoded);
+      }
     }
   }, []);
 

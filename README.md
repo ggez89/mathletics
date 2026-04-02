@@ -8,7 +8,7 @@ A professional, highly customizable math worksheet generator designed for educat
 
 - **Multiple Problem Modules**:
   - **Basic Arithmetic**: Addition, Subtraction, Multiplication (×), and Division (÷).
-  - **Long Division**: Customizable dividend and divisor ranges with remainder toggles.
+  - **Long Division**: Customizable dividend and divisor ranges with remainder toggles. Includes **full step-by-step visual solutions** showing subtractions, bring-down arrows, and intermediate steps for easy grading and learning.
   - **Fractions**: Addition, Subtraction, Multiplication, and Division with optional unreduced answer forms and "Like Denominators" mode.
   - **Time Telling**: Analog clock practice with **Identify** (read the clock) and **Draw** (draw the hands) modes. Includes "Scenarios" (e.g., "I wake up at...") for real-world context.
 - **Advanced Customization**:
@@ -22,6 +22,10 @@ A professional, highly customizable math worksheet generator designed for educat
   - **Smart Pagination**: Automatically calculates how many problems fit per page based on problem type and font size.
   - **Page Numbering**: Includes "Page X of Y" in the footer for multi-page worksheets.
   - **Smart Header**: Titles automatically shrink their font size to stay on a single line, ensuring a consistent header layout.
+- **QR Code Answer Lookup**:
+  - **Scan for Answers**: Optionally print a unique QR code in the worksheet footer.
+  - **Instant Solutions**: Scanning the QR code opens the worksheet on any device with the answer key automatically enabled and the sidebar hidden for a clean "Solutions View".
+  - **Configuration Persistence**: The QR code encodes the entire worksheet setup, ensuring the scanned version exactly matches the printed one.
 - **Modern Web Features**:
   - **Help Tooltips**: Brief help descriptions for all features and settings, accessible via hover on desktop and click on mobile.
   - **Mobile Optimized**: "Shrink-to-fit" responsive scaling ensures worksheets are perfectly visible on any device.
@@ -39,13 +43,15 @@ A professional, highly customizable math worksheet generator designed for educat
 1. **Adjust Page Settings**: Set your worksheet title, font size, and layout preferences.
 2. **Select Problem Type**: Choose a module from the sidebar (Arithmetic, Long Division, Fractions, or Time Telling).
 3. **Adjust Parameters**: Fine-tune ranges, operations, and specific problem settings.
-4. **Print Worksheet**: Click **Print Worksheet** to send to your printer or select "Save as PDF" in the print destination.
+4. **Enable QR Code**: (Optional) Toggle "Show Answer QR Code" in Advanced Controls to include a digital answer key on your printout.
+5. **Print Worksheet**: Click **Print Worksheet** to send to your printer or select "Save as PDF" in the print destination.
 
 ## Tech Stack
 
 - **[React](https://react.dev/)**: Modern functional components and hooks.
 - **[Tailwind CSS](https://tailwindcss.com/)**: Utility-first styling for a clean, responsive interface.
 - **[Lucide React](https://lucide.dev/)**: Beautiful, consistent iconography.
+- **[qrcode.react](https://www.npmjs.com/package/qrcode.react)**: High-quality QR code generation for digital answer keys.
 - **[UUID](https://www.npmjs.com/package/uuid)**: Unique identification for problem tracking.
 - **[Seedrandom](https://www.npmjs.com/package/seedrandom)**: Predictable random number generation.
 - **[Google AI Studio](https://aistudio.google.com/)**: Used to build, iterate, and deploy this application through natural language prompting.
