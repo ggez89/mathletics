@@ -110,8 +110,8 @@ export function generateTitle(config: WorksheetConfig): string {
  */
 export function calculateAutoProblemsPerPage(config: WorksheetConfig, showAnswers: boolean = false): number {
   // Heuristic: 11in page = 1056px. 
-  // Subtract margins (64px), header (~180px), footer (~180px)
-  const availableHeight = 1056 - 64 - 180 - 180;
+  // Subtract margins (64px), header (~200px), footer (~100px)
+  const availableHeight = 1056 - 64 - 200 - 100;
   
   let maxProblemHeight = 0;
   

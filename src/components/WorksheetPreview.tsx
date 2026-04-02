@@ -189,7 +189,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
             className="relative w-[8.5in] h-[11in] max-h-[11in] bg-white shadow-2xl px-8 pt-8 pb-8 flex flex-col overflow-hidden print:shadow-none print:w-[8.5in] print:h-[11in] print:min-h-[11in] print:px-8 print:pt-8 print:pb-8 print:border-0 print:break-after-page print:mx-auto"
           >
             <header className="mb-6 space-y-4 shrink-0">
-            <div className="flex justify-between items-end border-b-4 border-black pb-4 gap-8">
+            <div className="flex justify-between items-center border-b-4 border-black pb-4 gap-8">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-4">
                   <div className="grid grid-cols-2 gap-0.5 p-1 bg-white border-2 border-black rounded shadow-sm shrink-0">
@@ -224,6 +224,19 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
                   )}
                 </div>
               </div>
+
+              {config.layout.showQRCode && (
+                <div className="shrink-0 flex flex-col items-center gap-1">
+                  <QRCodeSVG 
+                    value={`https://ggez89.github.io/mathletics/?key=${base64Key}&mode=answers`}
+                    size={80}
+                    level="L"
+                    includeMargin={false}
+                  />
+                  <span className="text-[7px] font-bold uppercase text-gray-300 print:text-gray-400">Scan for Answers</span>
+                </div>
+              )}
+
               <div className="shrink-0 flex flex-col items-end gap-4">
                 <div className="flex items-center gap-2 text-sm font-bold whitespace-nowrap">
                   <span>Name:</span>
@@ -251,7 +264,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
             ))}
           </main>
 
-          <footer className="mt-auto pt-8 flex justify-between items-end text-[9px] text-gray-400 font-mono shrink-0 print:text-gray-600">
+          <footer className="mt-auto pt-4 flex justify-between items-end text-[9px] text-gray-400 font-mono shrink-0 print:text-gray-600">
             <div className="flex-1">
               {config.layout.showConfigKey && (
                 <div className="max-w-[80%] break-all mb-2">
@@ -262,17 +275,6 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
               <div className="text-gray-400 text-[11px] print:text-gray-600">https://ggez89.github.io/mathletics/</div>
             </div>
             <div className="flex flex-col items-end gap-2">
-              {config.layout.showQRCode && (
-                <div className="flex flex-col items-center gap-1">
-                  <QRCodeSVG 
-                    value={`https://ggez89.github.io/mathletics/?key=${base64Key}&mode=answers`}
-                    size={96}
-                    level="L"
-                    includeMargin={false}
-                  />
-                  <span className="text-[7px] font-bold uppercase text-gray-300 print:text-gray-400">Scan for Answers</span>
-                </div>
-              )}
               <div className="text-right whitespace-nowrap">
                 {pages.length > 1 && (
                   <div className="text-gray-500 font-bold text-[11px] print:text-gray-700">PAGE {pageIndex + 1} OF {pages.length}</div>
