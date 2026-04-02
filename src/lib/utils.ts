@@ -83,7 +83,14 @@ export function generateTitle(config: WorksheetConfig): string {
   if (config.problemSets.length === 1) {
     const set = config.problemSets[0];
     if (set.type === "arithmetic") {
-      title = `${set.params.operation === "+" ? "Addition" : set.params.operation === "-" ? "Subtraction" : set.params.operation === "*" ? "Multiplication" : "Division"} Practice`;
+      const op = set.params.operation;
+      let opLabel = "Arithmetic";
+      if (op === "+") opLabel = "Addition";
+      else if (op === "-" || op === "−") opLabel = "Subtraction";
+      else if (op === "*" || op === "×") opLabel = "Multiplication";
+      else if (op === "/" || op === "÷") opLabel = "Division";
+      
+      title = `${opLabel} Practice`;
     } else if (set.type === "longDivision") {
       title = "Long Division";
     } else if (set.type === "time") {
