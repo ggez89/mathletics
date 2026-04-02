@@ -212,7 +212,7 @@ export default function LongDivisionRenderer({ data, showAnswer, answer, steps }
       
       {/* Blank space for long division work - only if NOT showing answer */}
       {!showAnswer && (
-        <div className="absolute left-0 right-0 bottom-0 h-32 border-b border-dashed border-gray-300 pointer-events-none"></div>
+        <div className="absolute left-0 right-0 bottom-0 h-32 pointer-events-none"></div>
       )}
     </div>
   );

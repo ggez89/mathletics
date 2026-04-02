@@ -251,7 +251,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
             ))}
           </main>
 
-          <footer className="mt-auto pt-8 flex justify-between items-end text-[9px] text-gray-400 font-mono shrink-0 print:absolute print:bottom-8 print:left-8 print:right-8 print:pt-0 print:text-gray-600">
+          <footer className="mt-auto pt-8 flex justify-between items-end text-[9px] text-gray-400 font-mono shrink-0 print:text-gray-600">
             <div className="flex-1">
               {config.layout.showConfigKey && (
                 <div className="max-w-[80%] break-all mb-2">
