@@ -266,7 +266,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
                 <div className="flex flex-col items-center gap-1">
                   <QRCodeSVG 
                     value={`https://ggez89.github.io/mathletics/?key=${base64Key}&mode=answers`}
-                    size={64}
+                    size={96}
                     level="L"
                     includeMargin={false}
                   />
