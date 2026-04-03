@@ -5,13 +5,15 @@ import WorksheetControls from "./components/WorksheetControls";
 import WorksheetPreview from "./components/WorksheetPreview";
 import { Menu, FileText } from "lucide-react";
 
+const STORAGE_KEY = "mathletics_preferences";
+
 const DEFAULT_CONFIG: WorksheetConfig = {
   version: "1.0.0",
   seed: generateSeed(),
   layout: {
     problemsPerRow: 2,
     fontSize: 20,
-    spacing: 10,
+    spacing: 22,
     title: "", // Empty for auto-generation
     showAnswers: false,
     showSeed: false,
@@ -40,11 +42,58 @@ const DEFAULT_CONFIG: WorksheetConfig = {
 };
 
 export default function App() {
-  const [config, setConfig] = useState<WorksheetConfig>(DEFAULT_CONFIG);
+  const [config, setConfig] = useState<WorksheetConfig>(() => {
+    // Try to load from localStorage first
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const prefs = JSON.parse(saved);
+        const base = { ...DEFAULT_CONFIG };
+        
+        // Merge layout preferences
+        if (prefs.layout) {
+          base.layout = { ...base.layout, ...prefs.layout };
+        }
+        
+        // Merge problem set params (like allowRemainder)
+        if (prefs.problemSetParams) {
+          base.problemSets = base.problemSets.map(ps => ({
+            ...ps,
+            params: { ...ps.params, ...(prefs.problemSetParams[ps.type] || {}) }
+          }));
+        }
+        
+        return base;
+      } catch (e) {
+        console.error("Failed to parse saved preferences", e);
+      }
+    }
+    return DEFAULT_CONFIG;
+  });
+
   const [showAnswers, setShowAnswers] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  // Load initial config from URL if present
+  // Save preferences to localStorage when config changes
+  useEffect(() => {
+    const prefs = {
+      layout: {
+        showQRCode: config.layout.showQRCode,
+        showSeed: config.layout.showSeed,
+        showConfigKey: config.layout.showConfigKey,
+        spacing: config.layout.spacing,
+        fontSize: config.layout.fontSize,
+      },
+      problemSetParams: config.problemSets.reduce((acc: any, ps) => {
+        // Store params by type to apply to new sets of that type
+        acc[ps.type] = { ...acc[ps.type], ...ps.params };
+        return acc;
+      }, {})
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+  }, [config]);
+
+  // Load initial config from URL if present (overrides localStorage)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const key = params.get("key");

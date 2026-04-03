@@ -122,7 +122,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
     const newSet: ProblemDefinition = {
       type,
       weight: 1,
-      params: { ...module.defaultParams },
+      params: lastSet && lastSet.type === type ? { ...lastSet.params } : { ...module.defaultParams },
     };
     onChange({
       ...config,

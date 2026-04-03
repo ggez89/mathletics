@@ -189,7 +189,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
             className="relative w-[8.5in] h-[11in] max-h-[11in] bg-white shadow-2xl px-8 pt-8 pb-8 flex flex-col overflow-hidden print:shadow-none print:w-[8.5in] print:h-[11in] print:min-h-[11in] print:px-8 print:pt-8 print:pb-8 print:border-0 print:break-after-page print:mx-auto"
           >
             <header className="mb-6 space-y-4 shrink-0">
-            <div className="flex justify-between items-center border-b-4 border-black pb-4 gap-8">
+            <div className="flex justify-between items-center border-b-4 border-black pb-4 gap-6">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-4">
                   <div className="grid grid-cols-2 gap-0.5 p-1 bg-white border-2 border-black rounded shadow-sm shrink-0">
@@ -226,7 +226,7 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
               </div>
 
               {config.layout.showQRCode && (
-                <div className="shrink-0 flex flex-col items-center gap-1">
+                <div className="shrink-0 flex flex-col items-center gap-1 mr-auto ml-4">
                   <QRCodeSVG 
                     value={`https://ggez89.github.io/mathletics/?key=${base64Key}&mode=answers`}
                     size={80}
@@ -237,10 +237,10 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
                 </div>
               )}
 
-              <div className="shrink-0 flex flex-col items-end gap-4">
+              <div className="shrink-0 flex flex-col items-end gap-4 ml-8">
                 <div className="flex items-center gap-2 text-sm font-bold whitespace-nowrap">
                   <span>Name:</span>
-                  <div className="w-48 border-b-2 border-black h-5"></div>
+                  <div className="w-44 border-b-2 border-black h-5"></div>
                 </div>
                 <div className="flex items-center gap-2 text-sm font-bold whitespace-nowrap">
                   <span>Score:</span>
