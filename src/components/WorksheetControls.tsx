@@ -148,6 +148,8 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
       } else if (updates.type === "fraction") {
         newLayout.problemsPerRow = 2;
       }
+      // Clear manual title when type changes to allow auto-generation
+      newLayout.title = "";
     }
     onChange({ ...config, problemSets: newSets, layout: newLayout });
   };
@@ -157,7 +159,14 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
     const currentParams = newSets[setIndex].params;
     const syncedParams = syncParams(setIndex, paramName, value, currentParams);
     newSets[setIndex].params = syncedParams;
-    onChange({ ...config, problemSets: newSets });
+    
+    let newLayout = { ...config.layout };
+    // Clear manual title when operation changes to allow auto-generation
+    if (paramName === "operation") {
+      newLayout.title = "";
+    }
+    
+    onChange({ ...config, problemSets: newSets, layout: newLayout });
   };
 
   const handleLoadBase64 = () => {

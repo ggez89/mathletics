@@ -130,23 +130,37 @@ export default function WorksheetPreview({ config, showAnswers }: WorksheetPrevi
   useEffect(() => {
     const adjustTitleSize = () => {
       if (titleRef.current && titleParentRef.current) {
+        // Temporarily reset scale to measure the true natural width
+        titleRef.current.style.transform = 'none';
+        
         const parentWidth = titleParentRef.current.offsetWidth;
         const titleWidth = titleRef.current.scrollWidth;
         
+        // Restore transform or set new one
         if (titleWidth > parentWidth && parentWidth > 0) {
-          setTitleScale(parentWidth / titleWidth);
+          const newScale = parentWidth / titleWidth;
+          setTitleScale(newScale);
+          titleRef.current.style.transform = `scale(${newScale})`;
         } else {
           setTitleScale(1);
+          titleRef.current.style.transform = 'none';
         }
       }
     };
 
-    // Small delay to ensure layout is stable
-    const timer = setTimeout(adjustTitleSize, 50);
-    window.addEventListener("resize", adjustTitleSize);
+    const resizeObserver = new ResizeObserver(() => {
+      adjustTitleSize();
+    });
+
+    if (titleParentRef.current) {
+      resizeObserver.observe(titleParentRef.current);
+    }
+
+    // Also run when title content changes
+    adjustTitleSize();
+
     return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", adjustTitleSize);
+      resizeObserver.disconnect();
     };
   }, [displayTitle, scale]); // Re-run when title or page scale changes
 
