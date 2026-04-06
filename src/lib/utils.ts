@@ -2,11 +2,43 @@ import { WorksheetConfig } from "../types";
 
 /**
  * Encodes a WorksheetConfig object into a URL-safe Base64 string.
- * JSON → UTF-8 → Base64 → URL-safe transform
+ * Optimized for QR code density by shortening keys and omitting defaults.
  */
 export function encodeConfig(config: WorksheetConfig): string {
   try {
-    const json = JSON.stringify(config);
+    // 1. Map to short keys and omit defaults
+    const compact: any = {
+      v: config.version,
+      s: config.seed,
+      c: config.count,
+      ps: config.problemSets.map(ps => ({
+        ty: ps.type,
+        w: ps.weight === 1 ? undefined : ps.weight,
+        p: ps.params
+      })),
+      l: {
+        pr: config.layout.problemsPerRow === 2 ? undefined : config.layout.problemsPerRow,
+        fs: config.layout.fontSize === 20 ? undefined : config.layout.fontSize,
+        sp: config.layout.spacing === 22 ? undefined : config.layout.spacing,
+        t: config.layout.title || undefined,
+        sa: config.layout.showAnswers ? true : undefined,
+        ss: config.layout.showSeed ? true : undefined,
+        sc: config.layout.showConfigKey ? true : undefined,
+        sq: config.layout.showQRCode ? undefined : false, // Default is true
+        pm: config.layout.paginationMode === "pages" ? undefined : config.layout.paginationMode,
+        pp: config.layout.problemsPerPage === 20 ? undefined : config.layout.problemsPerPage,
+        pc: config.layout.pageCount === 1 ? undefined : config.layout.pageCount,
+      }
+    };
+
+    // Clean up undefined values from layout
+    Object.keys(compact.l).forEach(key => compact.l[key] === undefined && delete compact.l[key]);
+    if (Object.keys(compact.l).length === 0) delete compact.l;
+    
+    // Clean up undefined weights from problemSets
+    compact.ps.forEach((ps: any) => ps.w === undefined && delete ps.w);
+
+    const json = JSON.stringify(compact);
     const utf8 = unescape(encodeURIComponent(json));
     const base64 = btoa(utf8);
     return base64
@@ -21,6 +53,7 @@ export function encodeConfig(config: WorksheetConfig): string {
 
 /**
  * Decodes a URL-safe Base64 string back into a WorksheetConfig object.
+ * Handles both legacy full-key JSON and optimized short-key JSON.
  */
 export function decodeConfig(key: string): WorksheetConfig | null {
   try {
@@ -32,7 +65,37 @@ export function decodeConfig(key: string): WorksheetConfig | null {
     }
     const utf8 = atob(base64);
     const json = decodeURIComponent(escape(utf8));
-    return JSON.parse(json);
+    const data = JSON.parse(json);
+
+    // Handle legacy format (if 'version' exists as a full key)
+    if (data.version) return data;
+
+    // Handle optimized format
+    const config: WorksheetConfig = {
+      version: data.v || "1.0.0",
+      seed: data.s || "",
+      count: data.c ?? 20,
+      problemSets: (data.ps || []).map((ps: any) => ({
+        type: ps.ty,
+        weight: ps.w ?? 1,
+        params: ps.p || {}
+      })),
+      layout: {
+        problemsPerRow: data.l?.pr ?? 2,
+        fontSize: data.l?.fs ?? 20,
+        spacing: data.l?.sp ?? 22,
+        title: data.l?.t || "",
+        showAnswers: !!data.l?.sa,
+        showSeed: !!data.l?.ss,
+        showConfigKey: !!data.l?.sc,
+        showQRCode: data.l?.sq ?? true,
+        paginationMode: data.l?.pm || "pages",
+        problemsPerPage: data.l?.pp ?? 20,
+        pageCount: data.l?.pc ?? 1,
+      }
+    };
+
+    return config;
   } catch (error) {
     console.error("Failed to decode config:", error);
     return null;
@@ -40,10 +103,10 @@ export function decodeConfig(key: string): WorksheetConfig | null {
 }
 
 /**
- * Generates a random 8-character alphanumeric seed.
+ * Generates a random 6-character alphanumeric seed.
  */
 export function generateSeed(): string {
-  return Math.random().toString(36).substring(2, 10).toUpperCase();
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
 }
 
 /**
