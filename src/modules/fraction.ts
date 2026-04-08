@@ -9,6 +9,10 @@ function gcd(a: number, b: number): number {
   return b === 0 ? a : gcd(b, a % b);
 }
 
+function lcm(a: number, b: number): number {
+  return Math.abs(a * b) / gcd(a, b);
+}
+
 export function generate(rng: () => number, params: any = {}): Problem {
   const minNumerator = params.minNumerator ?? 1;
   const maxNumerator = params.maxNumerator ?? 10;
@@ -16,48 +20,101 @@ export function generate(rng: () => number, params: any = {}): Problem {
   const maxDenominator = params.maxDenominator ?? 10;
   const operation = params.operation ?? "+";
   const useLikeDenominators = params.useLikeDenominators ?? false;
+  const useMixedFractions = params.useMixedFractions ?? false;
+  const nonNegative = params.nonNegative ?? true;
 
-  let n1 = randInt(rng, minNumerator, maxNumerator);
-  let d1 = randInt(rng, minDenominator, maxDenominator);
-  let n2 = randInt(rng, minNumerator, maxNumerator);
-  let d2 = randInt(rng, minDenominator, maxDenominator);
+  let n1, d1, n2, d2, w1, w2, impN1, impN2, ansN, ansD;
+  let found = false;
+  let attempts = 0;
 
-  if (useLikeDenominators) {
-    d2 = d1;
+  while (!found && attempts < 50) {
+    attempts++;
+    n1 = randInt(rng, minNumerator, maxNumerator);
+    d1 = randInt(rng, minDenominator, maxDenominator);
+    n2 = randInt(rng, minNumerator, maxNumerator);
+    d2 = randInt(rng, minDenominator, maxDenominator);
+
+    if (useLikeDenominators) {
+      d2 = d1;
+    }
+
+    w1 = 0; w2 = 0;
+    if (useMixedFractions) {
+      w1 = randInt(rng, 1, 3);
+      w2 = randInt(rng, 1, 3);
+    }
+
+    impN1 = w1 * d1 + n1;
+    impN2 = w2 * d2 + n2;
+
+    switch (operation) {
+      case "+":
+        ansN = impN1 * d2 + impN2 * d1;
+        ansD = d1 * d2;
+        if (d1 === d2) { ansN = impN1 + impN2; ansD = d1; }
+        break;
+      case "-":
+        ansN = impN1 * d2 - impN2 * d1;
+        ansD = d1 * d2;
+        if (d1 === d2) { ansN = impN1 - impN2; ansD = d1; }
+        break;
+      case "×":
+        ansN = impN1 * impN2;
+        ansD = d1 * d2;
+        break;
+      case "÷":
+        ansN = impN1 * d2;
+        ansD = d1 * impN2;
+        break;
+      default:
+        ansN = impN1;
+        ansD = d1;
+    }
+
+    if ((!nonNegative || ansN >= 0) && n1 !== d1 && n2 !== d2) {
+      found = true;
+    }
   }
 
-  let ansN: number, ansD: number;
+  let steps: any = { type: operation };
 
   switch (operation) {
     case "+":
       if (d1 === d2) {
-        ansN = n1 + n2;
-        ansD = d1;
+        steps.common = { n1: impN1, d1, n2: impN2, d2, resN: ansN, resD: ansD };
       } else {
-        ansN = n1 * d2 + n2 * d1;
-        ansD = d1 * d2;
+        steps.common = { 
+          n1: impN1 * d2, 
+          d1: ansD, 
+          n2: impN2 * d1, 
+          d2: ansD, 
+          resN: ansN, 
+          resD: ansD,
+          original: { n1: impN1, d1, n2: impN2, d2 }
+        };
       }
       break;
     case "-":
       if (d1 === d2) {
-        ansN = n1 - n2;
-        ansD = d1;
+        steps.common = { n1: impN1, d1, n2: impN2, d2, resN: ansN, resD: ansD };
       } else {
-        ansN = n1 * d2 - n2 * d1;
-        ansD = d1 * d2;
+        steps.common = { 
+          n1: impN1 * d2, 
+          d1: ansD, 
+          n2: impN2 * d1, 
+          d2: ansD, 
+          resN: ansN, 
+          resD: ansD,
+          original: { n1: impN1, d1, n2: impN2, d2 }
+        };
       }
       break;
     case "×":
-      ansN = n1 * n2;
-      ansD = d1 * d2;
+      steps.multiply = { n1: impN1, d1, n2: impN2, d2, resN: ansN, resD: ansD };
       break;
     case "÷":
-      ansN = n1 * d2;
-      ansD = d1 * n2;
+      steps.inverse = { n1: impN1, d1, n2: d2, d2: impN2, resN: ansN, resD: ansD };
       break;
-    default:
-      ansN = n1;
-      ansD = d1;
   }
 
   // Simplify answer
@@ -65,21 +122,31 @@ export function generate(rng: () => number, params: any = {}): Problem {
   const simplifiedN = ansN / common;
   const simplifiedD = ansD / common;
 
+  if (common > 1 && ansN !== 0) {
+    steps.reduce = { n: ansN, d: ansD, factor: common, resN: simplifiedN, resD: simplifiedD };
+  }
+
+  // Mixed number result - only if enabled
+  if (useMixedFractions && simplifiedN >= simplifiedD && simplifiedD !== 0) {
+    const whole = Math.floor(simplifiedN / simplifiedD);
+    const remN = simplifiedN % simplifiedD;
+    if (remN > 0) {
+      steps.mixed = { whole, n: remN, d: simplifiedD };
+    } else {
+      steps.mixed = { whole };
+    }
+  }
+
   let displayAnswer = `${simplifiedN}/${simplifiedD}`;
   if (simplifiedD === 1) displayAnswer = `${simplifiedN}`;
   if (simplifiedN === 0) displayAnswer = "0";
-
-  // Add unreduced form if different
-  if (common > 1) {
-    displayAnswer += ` (${ansN}/${ansD})`;
-  }
 
   return {
     id: uuidv4(),
     type: "fraction",
     question: {
       format: "fraction",
-      data: { n1, d1, n2, d2, operation },
+      data: { n1, d1, n2, d2, w1, w2, operation, steps },
     },
     answer: {
       value: ansN / ansD,
@@ -91,10 +158,11 @@ export function generate(rng: () => number, params: any = {}): Problem {
 export const defaultParams = {
   minNumerator: 1,
   maxNumerator: 5,
-  minDenominator: 1,
+  minDenominator: 2,
   maxDenominator: 5,
   operation: "+",
   useLikeDenominators: false,
+  nonNegative: true,
 };
 
 export const paramSchema: ParamSchemaItem[] = [
@@ -111,6 +179,22 @@ export const paramSchema: ParamSchemaItem[] = [
       { label: "Multiplication (×)", value: "×" },
       { label: "Division (÷)", value: "÷" },
     ],
+  },
+  {
+    name: "nonNegative",
+    label: "No Negatives",
+    help: "Ensures subtraction results are never less than zero.",
+    type: "boolean",
+    default: true,
+    fullWidth: true,
+  },
+  {
+    name: "useMixedFractions",
+    label: "Mixed Fractions",
+    help: "If enabled, problems will include whole numbers (e.g., 1 1/2).",
+    type: "boolean",
+    default: false,
+    fullWidth: true,
   },
   {
     name: "useLikeDenominators",

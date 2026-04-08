@@ -7,34 +7,36 @@ A professional, highly customizable math worksheet generator designed for educat
 ## Features
 
 - **Multiple Problem Modules**:
-  - **Basic Arithmetic**: Addition (+), Subtraction (−), Multiplication (×), and Division (÷).
+  - **Basic Arithmetic**: Addition (+), Subtraction (−), Multiplication (×), and Division (÷). Includes **Stacked Renderer** for addition, subtraction, and multiplication with full visual solutions (carries, borrows, and partial products).
   - **Long Division**: Customizable dividend and divisor ranges with remainder toggles. Includes **full step-by-step visual solutions** showing subtractions, bring-down arrows, and intermediate steps for easy grading and learning.
-  - **Fractions**: Addition, Subtraction, Multiplication, and Division with optional unreduced answer forms and "Like Denominators" mode.
-  - **Time Telling**: Analog clock practice with **Identify** (read the clock) and **Draw** (draw the hands) modes. Includes "Scenarios" (e.g., "I wake up at...") for real-world context.
+  - **Fractions**: Addition, Subtraction, Multiplication, and Division with optional unreduced answer forms, `Like Denominators` mode, and **Mixed Fractions** support. Includes **Rich Visual Solutions** showing improper conversion, common denominator finding, multiplication by inverse (for division), and reduction steps.
+  - **Time Telling**: Analog clock practice with **Identify** (read the clock) and **Draw** (draw the hands) modes. Includes `Scenarios` (e.g., `I wake up at...`) for real-world context.
 - **Advanced Customization**:
   - **Value Ranges**: Set minimum and maximum values for operands, numerators, and denominators.
-  - **Max Answer**: Enforce "Max Answer" limits across all operations.
-  - **Division Remainders**: Toggle "Allow Remainders" for division with standard "Quotient R Remainder" notation.
-  - **Quotient Validation**: "Disallow Quotient 1" option to ensure meaningful practice.
-  - **Clock Customization**: Toggle minute ticks and choose between "All Numbers" or "Major Numbers" (12, 3, 6, 9) on clock faces.
+  - **Max Answer**: Enforce `Max Answer` limits across all operations.
+  - **Division Remainders**: Toggle `Allow Remainders` for division with standard `Quotient R Remainder` notation.
+  - **No Negatives**: Enforce positive results for subtraction in both Arithmetic and Fraction modules.
+  - **Mixed Fractions**: Toggle support for whole numbers in fraction problems and solutions.
+  - **Quotient Validation**: `Disallow Quotient 1` option to ensure meaningful practice.
+  - **Clock Customization**: Toggle minute ticks and choose between `All Numbers` or `Major Numbers` (12, 3, 6, 9) on clock faces.
 - **Professional Layout & Pagination**:
   - **Strict 8.5" x 11" Rendering**: Worksheets are rendered in a fixed-height container to ensure perfect print alignment.
   - **Smart Pagination**: Automatically calculates how many problems fit per page based on problem type and font size.
-  - **Page Numbering**: Includes "Page X of Y" in the footer for multi-page worksheets.
+  - **Page Numbering**: Includes `Page X of Y` in the footer for multi-page worksheets.
   - **Smart Header**: Titles automatically shrink their font size to stay on a single line, ensuring a consistent header layout.
 - **QR Code Answer Lookup**:
   - **Scan for Answers**: Optionally print a unique QR code in the worksheet footer.
-  - **Instant Solutions**: Scanning the QR code opens the worksheet on any device with the answer key automatically enabled and the sidebar hidden for a clean "Solutions View".
+  - **Instant Solutions**: Scanning the QR code opens the worksheet on any device with the answer key automatically enabled and the sidebar hidden for a clean `Solutions View`.
   - **Configuration Persistence**: The QR code encodes the entire worksheet setup, ensuring the scanned version exactly matches the printed one.
 - **Modern Web Features**:
   - **Help Tooltips**: Brief help descriptions for all features and settings, accessible via hover on desktop and click on mobile.
-  - **Mobile Optimized**: "Shrink-to-fit" responsive scaling ensures worksheets are perfectly visible on any device.
+  - **Mobile Optimized**: `Shrink-to-fit` responsive scaling ensures worksheets are perfectly visible on any device.
   - **Base64 Config Sharing**: Encode your entire worksheet configuration into a URL-safe key for easy sharing and reproducibility.
-  - **Seed-Based Generation**: Every worksheet includes a unique "Seed" for predictable random generation.
+  - **Seed-Based Generation**: Every worksheet includes a unique `Seed` for predictable random generation.
   - **Presets**: Save and load your favorite configurations directly to/from your browser's local storage.
 - **Print & Save**:
   - **Print Ready**: Optimized CSS for clean, professional printing on standard 8.5" x 11" paper.
-  - **Save as PDF**: Use the "Print Worksheet" button to save directly to your device as a PDF via your browser's print dialog.
+  - **Save as PDF**: Use the `Print Worksheet` button to save directly to your device as a PDF via your browser's print dialog.
   - **Answer Key**: Toggleable answer key for quick grading.
 
 ## Getting Started
@@ -43,7 +45,7 @@ A professional, highly customizable math worksheet generator designed for educat
 1. **Configure Problem Sets**: Choose problem modules (Arithmetic, Long Division, Fractions, or Time Telling) and fine-tune their parameters.
 2. **Adjust Page Settings**: Set your worksheet title, font size, and layout preferences. QR codes are enabled by default for easy answer lookup.
 3. **Advanced Controls**: (Optional) Manage seeds, Base64 keys, and presets for full reproducibility.
-4. **Print Worksheet**: Click **Print Worksheet** to send to your printer or select "Save as PDF" in the print destination.
+4. **Print Worksheet**: Click **Print Worksheet** to send to your printer or select `Save as PDF` in the print destination.
 
 ## Tech Stack
 

@@ -200,7 +200,7 @@ export function calculateAutoProblemsPerPage(config: WorksheetConfig, showAnswer
         h = config.layout.fontSize * 3 + 40;
         break;
       case "fraction":
-        h = Math.max(40, config.layout.fontSize * 2.5);
+        h = showAnswers ? 160 : Math.max(60, config.layout.fontSize * 3);
         break;
       case "inline":
       default:
