@@ -1,4 +1,4 @@
-export type ProblemFormat = "inline" | "vertical" | "fraction" | "longDivision" | "time";
+export type ProblemFormat = "inline" | "stacked" | "fraction" | "longDivision" | "time";
 
 export interface ProblemData {
   [key: string]: any;

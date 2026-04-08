@@ -316,7 +316,7 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                     .filter((param: ParamSchemaItem) => {
                       if (param.name === "disallowCarryover") {
                         return set.type === "arithmetic" && 
-                               set.params.format === "vertical" && 
+                               set.params.format === "stacked" && 
                                (set.params.operation === "+" || set.params.operation === "−" || set.params.operation === "-");
                       }
                       // Also hide division specific params if not division
@@ -342,11 +342,20 @@ export default function WorksheetControls({ config, onChange, onPrint }: Workshe
                             onChange={(e) => updateParams(setIndex, param.name, e.target.value)}
                             className={`w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs transition-all ${flashingFields[`${setIndex}-${param.name}`] ? "animate-flash-red" : ""}`}
                           >
-                            {param.options?.map((opt) => (
-                              <option key={opt.value} value={opt.value}>
-                                {opt.label}
-                              </option>
-                            ))}
+                            {param.options?.map((opt) => {
+                              let disabled = false;
+                              if (param.name === "format" && opt.value === "stacked" && set.params.operation === "÷") {
+                                disabled = true;
+                              }
+                              if (param.name === "operation" && opt.value === "÷" && set.params.format === "stacked") {
+                                disabled = true;
+                              }
+                              return (
+                                <option key={opt.value} value={opt.value} disabled={disabled}>
+                                  {opt.label}
+                                </option>
+                              );
+                            })}
                           </select>
                         ) : param.type === "boolean" ? (
                           <input

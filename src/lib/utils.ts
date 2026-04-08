@@ -196,7 +196,7 @@ export function calculateAutoProblemsPerPage(config: WorksheetConfig, showAnswer
       case "time":
         h = 190; // Reduced further to ensure 3 rows (6 clocks) fit on a page
         break;
-      case "vertical":
+      case "stacked":
         h = config.layout.fontSize * 3 + 40;
         break;
       case "fraction":

@@ -27,6 +27,91 @@ function hasCarryover(a: number, b: number, operation: string): boolean {
   return false;
 }
 
+function calculateStackedSteps(a: number, b: number, operation: string) {
+  const sA = a.toString();
+  const sB = b.toString();
+  const maxLen = Math.max(sA.length, sB.length);
+  const padA = sA.padStart(maxLen, '0');
+  const padB = sB.padStart(maxLen, '0');
+  
+  if (operation === "+" || operation === "Addition") {
+    const carries: number[] = [];
+    let carry = 0;
+    for (let i = 0; i < maxLen; i++) {
+      const digitA = parseInt(padA[maxLen - 1 - i]);
+      const digitB = parseInt(padB[maxLen - 1 - i]);
+      const sum = digitA + digitB + carry;
+      carry = sum >= 10 ? 1 : 0;
+      carries.unshift(carry);
+    }
+    // Remove the last carry if it's 0 (it's for the next column which might not exist)
+    // Actually, we want carries[i] to be the carry ABOVE column i.
+    // Column 0 is ones, Column 1 is tens, etc.
+    // Carry from ones goes to tens.
+    const resultCarries = new Array(maxLen).fill(0);
+    let c = 0;
+    for (let i = 0; i < maxLen; i++) {
+      const digitA = parseInt(padA[maxLen - 1 - i]);
+      const digitB = parseInt(padB[maxLen - 1 - i]);
+      const sum = digitA + digitB + c;
+      c = sum >= 10 ? 1 : 0;
+      if (i + 1 < maxLen) {
+        resultCarries[maxLen - 2 - i] = c;
+      }
+    }
+    return { carries: resultCarries };
+  } else if (operation === "-" || operation === "−" || operation === "Subtraction") {
+    // Borrowing
+    const borrows: any[] = []; // { index, original, current, isBorrowed }
+    const digitsA = padA.split('').map(Number);
+    const digitsB = padB.split('').map(Number);
+    const steps = digitsA.map(d => ({ original: d, current: d, isBorrowed: false, borrowedFrom: false }));
+
+    for (let i = maxLen - 1; i >= 0; i--) {
+      if (steps[i].current < digitsB[i]) {
+        // Need to borrow
+        let j = i - 1;
+        while (j >= 0 && steps[j].current === 0) {
+          j--;
+        }
+        
+        if (j >= 0) {
+          // Borrow from j
+          steps[j].current -= 1;
+          steps[j].borrowedFrom = true;
+          // Fill zeros in between
+          for (let k = j + 1; k < i; k++) {
+            steps[k].current = 9;
+            steps[k].isBorrowed = true;
+            steps[k].borrowedFrom = true;
+          }
+          steps[i].current += 10;
+          steps[i].isBorrowed = true;
+        }
+      }
+    }
+    return { borrows: steps };
+  } else if (operation === "×" || operation === "Multiplication") {
+    const sB = b.toString();
+    const partialProducts: { value: number; color: string; offset: number }[] = [];
+    const stepColors = ["#dc2626", "#2563eb", "#16a34a", "#9333ea", "#ea580c"];
+
+    if (sB.length > 1) {
+      for (let i = 0; i < sB.length; i++) {
+        const digit = parseInt(sB[sB.length - 1 - i]);
+        const partialValue = a * digit * Math.pow(10, i);
+        partialProducts.push({
+          value: partialValue,
+          color: stepColors[i % stepColors.length],
+          offset: i
+        });
+      }
+    }
+    return { partialProducts };
+  }
+  return null;
+}
+
 export function generate(rng: () => number, params: any = {}): Problem {
   const minVal = Number(params.minVal ?? 1);
   const maxVal = Number(params.maxVal ?? 100);
@@ -164,7 +249,12 @@ export function generate(rng: () => number, params: any = {}): Problem {
     type: "arithmetic",
     question: {
       format: format as any,
-      data: { a, b, operation: displayOp },
+      data: { 
+        a, 
+        b, 
+        operation: displayOp,
+        steps: format === "stacked" ? calculateStackedSteps(a, b, operation) : null
+      },
     },
     answer: {
       value: result,
@@ -232,7 +322,7 @@ export const paramSchema: ParamSchemaItem[] = [
     default: defaultParams.format,
     options: [
       { label: "Inline (a + b = )", value: "inline" },
-      { label: "Vertical", value: "vertical" },
+      { label: "Stacked", value: "stacked" },
     ],
   },
   {

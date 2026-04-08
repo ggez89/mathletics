@@ -2,7 +2,7 @@ import React from "react";
 import { Problem } from "../types";
 import FractionRenderer from "./renderers/FractionRenderer";
 import LongDivisionRenderer from "./renderers/LongDivisionRenderer";
-import VerticalRenderer from "./renderers/VerticalRenderer";
+import StackedRenderer from "./renderers/StackedRenderer";
 import InlineRenderer from "./renderers/InlineRenderer";
 import TimeRenderer from "./renderers/TimeRenderer";
 
@@ -22,8 +22,8 @@ export const ProblemRenderer: React.FC<ProblemRendererProps> = ({ problem, showA
         return <FractionRenderer data={data} showAnswer={showAnswers} answer={display} />;
       case "longDivision":
         return <LongDivisionRenderer data={data} showAnswer={showAnswers} answer={display} steps={value?.steps} />;
-      case "vertical":
-        return <VerticalRenderer data={data} showAnswer={showAnswers} answer={display} />;
+      case "stacked":
+        return <StackedRenderer data={data} showAnswer={showAnswers} answer={display} />;
       case "time":
         return <TimeRenderer data={data} showAnswer={showAnswers} answer={display} />;
       case "inline":
